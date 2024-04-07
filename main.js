@@ -1,16 +1,15 @@
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
-process.on('SIGINT', () => console.error);
-process.on('SIGTERM', () => console.error);
+//process.on('SIGINT', () => console.error);
+//process.on('SIGTERM', () => console.error);
 process.on('uncaughtException', () => console.error);
-process.on('uncaughtExceptionMonitor', () => console.error);
+//process.on('uncaughtExceptionMonitor', () => console.error);
 process.on('unhandledRejection', () => console.error);
-process.on('multipleResolves', () => console.error);
-process.on('unhandledRejection', () => console.error);
-process.on('rejectionHandled', () => console.error);
-process.on('warning', () => console.error);
-process.on('beforeExit', () => console.error);
-process.on('exit', () => console.error);
-process.stdin.resume();
+//process.on('multipleResolves', () => console.error);
+//process.on('rejectionHandled', () => console.error);
+//process.on('warning', () => console.error);
+//process.on('beforeExit', () => console.error);
+//process.on('exit', () => console.error);
+//process.stdin.resume();
 
 import {
     loadConfig
@@ -88,7 +87,7 @@ const stream = pretty({
 });
 
 const logger = pino({
-    level: 'info'
+    level: 'fatal'
 }, stream);
 
 import {
@@ -270,7 +269,7 @@ await loadDatabase();
 const {
     version,
     isLatest
-} = await fetchLatestWaWebVersion().catch(() => fetchLatestBaileysVersion());
+} = await fetchLatestBaileysVersion().catch(() => fetchLatestWaWebVersion());
 
 global.authFolder = storeSystem.fixFileName(`${Helper.opts._[0] || ''}TaylorSession`)
 global.authFile = `${Helper.opts._[0] || 'session'}.data.json`
@@ -338,7 +337,7 @@ const connectionOptions = {
         creds: authState.state.creds,
         keys: makeCacheableSignalKeyStore(authState.state.keys, logger),
     },
-    browser: ["Ubuntu", "Chrome", "20.0.04"],
+    browser: ['Ubuntu', 'Edge', '110.0.1587.56'],
     version,
     getMessage: async (key) => {
         if (store) {
@@ -511,7 +510,7 @@ async function connectionUpdate(update) {
 
     if (code && code !== DisconnectReason.loggedOut && conn?.ws.socket == null) {
         try {
-            await global.reloadHandler().catch(console.error);
+            await global.reloadHandler(true);
         } catch (err) {
             console.error(err);
         }
@@ -554,7 +553,6 @@ async function connectionUpdate(update) {
             conn.logger.error(`\nError Connection'\n${format(e)}'`);
         }
         conn.logger.info(chalk.bold.yellow('\n🚩 R E A D Y'));
-        Object.freeze(global.reload);
         await runTasks();
     }
 
@@ -562,11 +560,7 @@ async function connectionUpdate(update) {
     else if (isOnline === false) conn.logger.error(chalk.bold.red('Status Mati'));
 
     if (receivedPendingNotifications) conn.logger.warn(chalk.bold.yellow('Menunggu Pesan Baru'));
-
-    if (connection === 'close') {
-        await global.reloadHandler().catch(console.error);
-    }
-
+    
     if ((!pairingCode && !useMobile || useQr) && qr !== 0 && qr !== undefined && connection === 'close') {
         if (!useMobile) conn.logger.error(chalk.bold.yellow(`\n🚩 Koneksi ditutup, harap hapus folder ${authFolder} dan pindai ulang kode QR`));
         else conn.logger.info(chalk.bold.yellow(`\n🚩 Pindai kode QR ini, kode QR akan kedaluwarsa dalam 60 detik.`));
@@ -665,7 +659,7 @@ global.reloadHandler = async function reloadHandler(restatConn) {
     isInit = false;
     return true;
 };
-await global.reloadHandler().catch(console.error);
+await global.reloadHandler();
 
 const spinner = ora({
     text: 'Running tasks',
