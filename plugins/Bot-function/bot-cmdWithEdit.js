@@ -2,11 +2,12 @@ const {
     proto,
     generateWAMessage,
     areJidsSameUser
-} = (await import('@whiskeysockets/baileys')).default
+} = await(await import('@whiskeysockets/baileys')).default
 
 export async function all(m, chatUpdate) {
-    if (m.isBaileys) return
-    if (!m.message?.editedMessage) return
+    if (m.isBaileys) return;
+    if (!m.message) return;
+    if (!m.message?.editedMessage) return;
     let hash = {
         text: m.message?.editedMessage?.message?.protocolMessage?.editedMessage?.extendedTextMessage?.text || m.message?.editedMessage?.extendedTextMessage?.text || null,
         mentionedJid: [m.sender] || []
@@ -15,13 +16,13 @@ export async function all(m, chatUpdate) {
         text,
         mentionedJid
     } = hash
-    if (!text) return
+    if (!text && !mentionedJid) return;
     let messages = await generateWAMessage(m.chat, {
         text: text,
         mentions: mentionedJid
     }, {
-        userJid: this.user.jid || this.user.id,
-        quoted: m.quoted && m.getQuotedObj() || m.quoted.fakeObj || m.quoted.vM
+        userJid: this?.user?.jid || this?.user?.id,
+        quoted: m.quoted && m.quoted?.fakeObj
     })
     messages.key.fromMe = areJidsSameUser(m.sender, this.user.jid || this.user.id)
     messages.key.id = m.key.id
