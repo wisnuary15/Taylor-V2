@@ -11,8 +11,8 @@ const handler = async (m, {
 }) => {
     const q = m.quoted ? m.quoted : m;
     const mime = (q.msg || q).mimetype || '';
-    const media = await q.download();
     if (!mime) throw 'Tidak ada media yang ditemukan';
+    const media = await q.download();
     const text = args.length >= 1 ? args.join(" ") : (m.quoted && m.quoted.text) || (() => {
         throw "Input Teks"
     })();
