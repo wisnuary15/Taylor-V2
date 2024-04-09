@@ -1,15 +1,4 @@
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
-//process.on('SIGINT', () => console.error);
-//process.on('SIGTERM', () => console.error);
-process.on('uncaughtException', () => console.error);
-//process.on('uncaughtExceptionMonitor', () => console.error);
-process.on('unhandledRejection', () => console.error);
-//process.on('multipleResolves', () => console.error);
-//process.on('rejectionHandled', () => console.error);
-//process.on('warning', () => console.error);
-//process.on('beforeExit', () => console.error);
-//process.on('exit', () => console.error);
-//process.stdin.resume();
 
 import {
     loadConfig
@@ -87,8 +76,16 @@ const stream = pretty({
 });
 
 const logger = pino({
-    level: 'fatal'
+    level: 'error'
 }, stream);
+
+process.on('SIGINT', () => logger.error('Received SIGINT'));
+process.on('SIGTERM', () => logger.error('Received SIGTERM'));
+process.on('uncaughtException', () => logger.error('Uncaught Exception'));
+process.on('unhandledRejection', () => logger.error('Unhandled Rejection'));
+process.on('warning', () => logger.warn('Warning'));
+process.on('exit', () => logger.info('Exiting'));
+process.stdin.resume();
 
 import {
     makeWaSocket,
@@ -701,12 +698,12 @@ const runTasks = async () => {
             func: clearTmp,
             message: 'Clearing temporary files',
             style: chalk.bgBlue.bold
-        },
+        },/*
         {
             func: clearSessions,
             message: 'Clearing sessions',
             style: chalk.bgBlue.bold
-        }
+        }*/
     ];
 
     const promises = tasks.map(async ({
