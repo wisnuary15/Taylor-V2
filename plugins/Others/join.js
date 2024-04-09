@@ -40,4 +40,7 @@ let handler = async (m, {
 
 }
 handler.command = /^join$/i
+handler.rowner = true;
+handler.owner = true;
+handler.premium = true;
 export default handler
