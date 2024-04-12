@@ -51,7 +51,7 @@ import {
     promisify,
     isDeepStrictEqual
 } from 'util';
-
+import colors from 'colors';
 import {
     Boom
 } from "@hapi/boom";
@@ -79,14 +79,6 @@ const logger = pino({
     level: 'error'
 }, stream);
 
-process.on('SIGINT', () => logger.error('Received SIGINT'));
-process.on('SIGTERM', () => logger.error('Received SIGTERM'));
-process.on('uncaughtException', () => logger.error('Uncaught Exception'));
-process.on('unhandledRejection', () => logger.error('Unhandled Rejection'));
-process.on('warning', () => logger.warn('Warning'));
-process.on('exit', () => logger.info('Exiting'));
-process.stdin.resume();
-
 import {
     makeWaSocket,
     protoType,
@@ -113,7 +105,7 @@ const {
     PHONENUMBER_MCC,
     delay,
     DisconnectReason
-} = await (await import("@whiskeysockets/baileys")).default;
+} = await(await import("@whiskeysockets/baileys")).default;
 
 import inquirer from 'inquirer';
 import parsePhoneNumber from 'awesome-phonenumber';
@@ -464,8 +456,46 @@ if (useMobile && !conn.authState.creds.registered) {
 
 conn.logger.info('\n🚩 W A I T I N G\n');
 
-if (opts['autocleartmp']) {
-    if (opts['autocleartmp'] && (global.support || {}).find) {
+process.on('multipleResolves', (type, promise, reason) => {
+  console.log(`${colors.bold.red(`[MULTIPLE RESOLVES]`)} `);
+  //console.log(type, promise, reason)
+  });
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.log(`${colors.bold.red(`[UNHANDLED REJECTION]`)} `);
+    //console.log(reason, promise)
+  });
+
+process.on('uncaughtException', (err, origin) => {
+  console.log(`${colors.bold.red(`[UNCAUGHT EXCEPTION]`)} `);
+  //console.log(err, origin)
+  });
+
+process.on('uncaughtExceptionMonitor', (err, origin) => {
+  console.log(`${colors.bold.red(`[UNCAUGHT EXCEPTION MONITOR]`)} `);
+  //console.log(err, origin)
+  });
+
+process.on('warning', (warning) => {
+  console.log(`${colors.bold.red(`[WARNING]`)} ` + `${warning}`.yellow);
+});
+
+process.on('message', (message) => {
+  console.log(`${colors.bold.green(`[MESSAGE]`)} ` + `${message}`.yellow);
+});
+
+process.on('beforeExit', (code) => {
+  console.log(`${colors.bold.green(`[BEFORE EXIT]`)} `);
+  //console.log(code.yellow.dim)
+});
+
+process.on('exit', (code) => {
+  console.log(`${colors.bold.green(`[EXIT]`)} `);
+  //console.log(code.yellow.dim)
+});
+
+if (opts['cleartmp']) {
+    if (opts['cleartmp'] && (global.support || {}).find) {
         ['tmp', 'jadibot'].forEach((filename) => cp.spawn('find', [os.tmpdir(), filename, '-amin', '3', '-type', 'f', '-delete']));
         clearTmp();
     }
@@ -479,7 +509,7 @@ async function writeDatabase() {
     } catch (error) {
         console.error(error);
     } finally {
-        setTimeout(writeDatabase, 10 * 60 * 1000);
+        setTimeout(writeDatabase, 15 * 60 * 1000);
     }
 };
 
@@ -567,10 +597,10 @@ async function connectionUpdate(update) {
 
 
 let isInit = true;
-let handler = await (await import('./handler.js'));
+let handler = (await import('./handler.js'));
 global.reloadHandler = async function reloadHandler(restatConn) {
     try {
-        const Handler = await (await import(`./handler.js?update=${Date.now()}`)).catch(console.error);
+        const Handler = (await import(`./handler.js?update=${Date.now()}`)).catch(console.error);
         if (Object.keys(Handler || {}).length) handler = Handler;
     } catch (error) {
         console.error;
@@ -664,47 +694,48 @@ const spinner = ora({
 });
 
 const runTasks = async () => {
-    const tasks = [{
-            func: _quickTest,
-            message: 'Quick Test',
-            style: chalk.bgBlue.bold
-        },
-        {
-            func: writeDatabase,
-            message: 'Write database',
-            style: chalk.bgBlue.bold
-        },
-        {
-            func: filesInit,
-            message: 'Initializing files',
-            style: chalk.bgBlue.bold
-        },
-        {
-            func: libFiles,
-            message: 'Loading library files',
-            style: chalk.bgBlue.bold
-        },
-        {
-            func: watchFiles,
-            message: 'Watching files',
-            style: chalk.bgBlue.bold
-        },
-        {
-            func: () => watch(path.resolve(directoryName, 'plugins'), global.reload),
-            message: 'Watching plugins',
-            style: chalk.bgBlue.bold
-        },
-        {
-            func: clearTmp,
-            message: 'Clearing temporary files',
-            style: chalk.bgBlue.bold
-        },/*
-        {
-            func: clearSessions,
-            message: 'Clearing sessions',
-            style: chalk.bgBlue.bold
-        }*/
-    ];
+    const tasks = [
+    {
+        func: _quickTest,
+        message: 'Quick Test',
+        style: chalk.bgBlue.bold
+    },
+    {
+        func: writeDatabase,
+        message: 'Write database',
+        style: chalk.bgBlue.bold
+    },
+    {
+        func: filesInit,
+        message: 'Initializing files',
+        style: chalk.bgBlue.bold
+    },
+    {
+        func: libFiles,
+        message: 'Loading library files',
+        style: chalk.bgBlue.bold
+    },
+    {
+        func: watchFiles,
+        message: 'Watching files',
+        style: chalk.bgBlue.bold
+    },
+    {
+        func: () => watch(path.resolve(directoryName, 'plugins'), global.reload),
+        message: 'Watching plugins',
+        style: chalk.bgBlue.bold
+    },
+    opts['cleartmp'] ? {
+        func: clearTmp,
+        message: 'Clearing temporary files',
+        style: chalk.bgBlue.bold
+    } : null,
+    opts['clearsession'] ? {
+        func: clearSessions,
+        message: 'Clearing sessions',
+        style: chalk.bgBlue.bold
+    } : null
+].filter(task => task !== null);
 
     const promises = tasks.map(async ({
         func,
@@ -758,7 +789,7 @@ async function filesInit() {
         const moduleName = path.join('/plugins', path.relative(path.resolve(directoryName, 'plugins'), file));
 
         try {
-            const module = await (await import(file));
+            const module = (await import(file));
             global.plugins[moduleName] = module.default || module;
             return {
                 moduleName,
@@ -844,7 +875,7 @@ async function libFiles() {
         const moduleName = path.join('/lib', path.relative(path.resolve(global.__dirname(import.meta.url), 'lib'), file));
 
         try {
-            const module = await (await import(file));
+            const module = (await import(file));
             setNestedObject(global.lib, moduleName.slice(0, -3), module.default || module);
             return {
                 moduleName,
@@ -903,7 +934,7 @@ global.reload = async (_ev, filename) => {
             if (err) {
                 conn.logger.error(`\nSyntax error while loading '${filename}'\n${format(err)}`);
             } else {
-                const module = await (await import(`${global.__filename(dir)}?update=${Date.now()}`));
+                const module = (await import(`${global.__filename(dir)}?update=${Date.now()}`));
                 global.plugins[filename] = module.default || module;
             }
         } else {
@@ -928,7 +959,7 @@ async function FileEv(type, file) {
                 break;
             case 'change':
             case 'add':
-                const module = await (await import(`${resolvedFile}?update=${Date.now()}`));
+                const module = (await import(`${resolvedFile}?update=${Date.now()}`));
                 global.plugins[resolvedFile] = module.default || module;
                 break;
         }
@@ -1013,7 +1044,7 @@ async function clearTmp() {
         console.error(`Error in clearTmp: ${err.message}`);
         return [];
     } finally {
-        setTimeout(clearTmp, 65 * 60 * 1000);
+        setTimeout(clearTmp, 36 * 60 * 1000);
     }
 }
 
@@ -1039,7 +1070,7 @@ async function clearSessions(folder) {
         console.error(`Error in Clear Sessions: ${err.message}`);
         return [];
     } finally {
-        setTimeout(() => clearSessions(folder), 125 * 60 * 1000);
+        setTimeout(() => clearSessions(folder), 65 * 60 * 1000);
     }
 }
 
