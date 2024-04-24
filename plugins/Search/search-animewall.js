@@ -69,7 +69,8 @@ let handler = async (m, {
     }
 };
 
-handler.tags = ['tools'];
-handler.command = ['e621', 'gelbooru', 'rule34', 'danbooru', 'konachan', 'konachan18', 'hypnohub', 'xbooru', 'realbooru', 'furrybooru'];
+handler.tags = ['search'];
+handler.help = ['e621', 'gelbooru', 'rule34', 'danbooru', 'konachan', 'konachan18', 'hypnohub', 'xbooru', 'realbooru', 'furrybooru'];
+handler.command = /^(e621|gelbooru|rule34|danbooru|konachan|konachan18|hypnohub|xbooru|realbooru|furrybooru)$/i;
 
 export default handler;
