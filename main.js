@@ -1,19 +1,19 @@
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-process.env.NODE_OPTIONS = '--max-old-space-size=4096 --optimize-for-size --use-strict --no-lazy --max-http-header-size=16384 --stack-trace-limit=1000 --async-stack-traces';
-process.env.NODE_MAX_LISTENERS = 100;
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+process.env.NODE_OPTIONS = '--max-old-space-size=4096 --use-strict --no-lazy --max-http-header-size=16384 --stack-trace-limit=1000 --async-stack-traces';
+process.env.NODE_MAX_LISTENERS = '100';
 process.env.NODE_ENV = 'production';
-process.env.NODE_GC_GLOBAL = true;
-process.env.NODE_COMPRESS_RESPONSE = true;
-process.env.NODE_STRICT_MODE = true;
-process.env.NODE_FAST_RESPONSE = true;
-process.env.NODE_PERF_HOOKS = true;
-process.env.UV_THREADPOOL_SIZE = 64;
+process.env.NODE_GC_GLOBAL = 'true';
+process.env.NODE_COMPRESS_RESPONSE = 'true';
+process.env.NODE_STRICT_MODE = 'true';
+process.env.NODE_FAST_RESPONSE = 'true';
+process.env.NODE_PERF_HOOKS = 'true';
+process.env.UV_THREADPOOL_SIZE = '64';
 process.env.V8_OPTS = '--max_inlined_source_size=600000 --max_new_space_size=2048 --max_old_space_size=4096 --max_executable_size=512 --initial_old_space_size=2048 --initial_executable_size=256';
-process.env.V8_ENABLE_WEBASSEMBLY = 1;
-process.env.V8_CONTEXT_ALIGNMENT = 64;
-process.env.V8_DEPRECATION_WARNINGS = false;
-process.env.V8_TURBOFAN_BACKEND = 1;
-process.env.V8_TURBOFAN_INTRINSICS = 1;
+process.env.V8_ENABLE_WEBASSEMBLY = '1';
+process.env.V8_CONTEXT_ALIGNMENT = '64';
+process.env.V8_DEPRECATION_WARNINGS = 'false';
+process.env.V8_TURBOFAN_BACKEND = '1';
+process.env.V8_TURBOFAN_INTRINSICS = '1';
 
 import {
     loadConfig
