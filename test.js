@@ -94,7 +94,7 @@ const runSyntaxCheck = async () => {
 
         const files = glob.sync('**/*.js', {
             cwd: __dirname,
-            ignore: ['node_modules/**', __filename],
+            ignore: ['node_modules/**', __filename, '**/run.js'],
         });
 
         for (const file of files) {

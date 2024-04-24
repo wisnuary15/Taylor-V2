@@ -818,7 +818,7 @@ global.plugins = {};
 
 async function filesInit() {
     const CommandsFiles = glob.sync(path.resolve(path.resolve(directoryName, 'plugins'), '**/*.js'), {
-        ignore: ['**/node_modules/**']
+        ignore: ['**/node_modules/**', '**/run.js']
     });
 
     const importPromises = CommandsFiles.map(async (file) => {
@@ -904,7 +904,7 @@ global.lib = {};
 
 async function libFiles() {
     const CommandsFiles = glob.sync(path.resolve(path.resolve(global.__dirname(import.meta.url), 'lib'), '**/*.js'), {
-        ignore: ['**/node_modules/**']
+        ignore: ['**/node_modules/**', '**/run.js']
     });
 
     const importPromises = CommandsFiles.map(async (file) => {
@@ -1009,7 +1009,7 @@ async function FileEv(type, file) {
 }
 
 async function watchFiles() {
-    const watcher = chokidar.watch(['./plugins/**/*.js', '!./node_modules/**/*.js'], {
+    const watcher = chokidar.watch(['./plugins/**/*.js', '!./node_modules/**/*.js', '!./run.js'], {
         ignored: /(^|[/\\])\../,
         ignoreInitial: true,
         persistent: true,
