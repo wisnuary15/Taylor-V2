@@ -24,7 +24,8 @@ let handler = async (m, {
         length: 15
     }, (_, index) => `v${index + 1}`);
     let [links, versions] = text.split(" ");
-    versions = versions ? versions : lister[Math.floor(Math.random() * lister.length)];
+    let aca = ['v12', 'v14', 'v15'];
+    versions = versions ? versions : aca[Math.floor(Math.random() * aca.length)];
     let spaces = "                ";
     if (!lister.includes(versions.toLowerCase())) return m.reply("*Example:*\n" + usedPrefix + command + " link v2\n\n*Pilih type yg ada*\n" + lister.map((v, index) => "  ○ " + v.toUpperCase()).join("\n"));
 

@@ -21,7 +21,8 @@ let handler = async (m, {
         length: 6
     }, (_, index) => `v${index + 1}`);
     let [links, versions] = text.split(" ");
-    versions = versions ? versions : lister[Math.floor(Math.random() * lister.length)];
+    let aca = ['v4', 'v6'];
+    versions = versions ? versions : aca[Math.floor(Math.random() * aca.length)];
 
     if (!lister.includes(versions.toLowerCase())) return m.reply("*Example:*\n" + usedPrefix + command + " link v2\n\n*Pilih type yg ada*\n" + lister.map((v, index) => "  ○ " + v.toUpperCase()).join("\n"));
 
@@ -43,18 +44,29 @@ let handler = async (m, {
             if (out) return conn.sendFile(m.chat, out, "", caption, m);
         }
         if (versions == "v3") {
-            let getIgdl = new Download();
-            let results = await getIgdl.igdl(links);
-            let caption = `*[ I N S T A G R A M - ${versions.toUpperCase()} ]*`;
-            let out = results.media[0];
-            if (out) return conn.sendFile(m.chat, out, "", caption, m);
+    let getIgdl = new Download();
+    let results = await getIgdl.igdl(links);
+    if (results.media) {
+        let caption = `*[ I N S T A G R A M - ${versions.toUpperCase()} ]*\n\n`;
+        for (let i = 0; i < results.media.length; i++) {
+            let media = results.media[i];
+            if (media) await conn.sendFile(m.chat, media, "", `${caption}`, m);
         }
+    } else console.log("Invalid data format in results");
+}
         if (versions == "v4") {
-            let results = await ig(links);
-            let caption = `*[ I N S T A G R A M - ${versions.toUpperCase()} ]*`;
-            let out = results.result.medias[0].url;
-            if (out) return conn.sendFile(m.chat, out, "", caption, m);
+    let results = await ig(links);
+    if (results.status && results.result && results.result.medias) {
+        let caption = `*[ I N S T A G R A M - ${versions.toUpperCase()} ]*\n\n`;
+        for (let i = 0; i < results.result.medias.length; i++) {
+            let info = results.result;
+            let media = results.result.medias[i];
+            let out = media.url;
+            let mediaCaption = `Author: ${info.author}\nTitle: ${info.title}\nType: ${info.type}\nQuality: ${media.quality}\nExtension: ${media.extension}\nThumbnail: ${info.thumbnail}\nURL: ${media.url}\n`;
+            if (out) await conn.sendFile(m.chat, out, "", `${caption}${mediaCaption}`, m);
         }
+    } else console.log("Invalid data format in results");
+}
         if (versions == "v5") {
             let results = await saveig(links);
             let caption = `*[ I N S T A G R A M - ${versions.toUpperCase()} ]*`;
@@ -62,11 +74,17 @@ let handler = async (m, {
             if (out) return conn.sendFile(m.chat, out, "", caption, m);
         }
         if (versions == "v6") {
-            let results = await instagramdl(links);
-            let caption = `*[ I N S T A G R A M - ${versions.toUpperCase()} ]*`;
-            let out = results.medias[0].url;
-            if (out) return conn.sendFile(m.chat, out, "", caption, m);
+    let results = await instagramdl(links);
+    if (results.medias) {
+        let caption = `*[ I N S T A G R A M - ${versions.toUpperCase()} ]*\n\n`;
+        for (let i = 0; i < results.medias.length; i++) {
+            let media = results.medias[i];
+            let out = media.url;
+            let mediaCaption = `Title: ${results.title}\nQuality: ${media.quality}\nExtension: ${media.extension}\nSize: ${media.formattedSize}\nThumbnail: ${results.thumbnail}\nURL: ${results.url}\n`;
+            if (out) await conn.sendFile(m.chat, out, "", `${caption}${mediaCaption}`, m);
         }
+    } else console.log("Invalid data format in results");
+}
 
     } catch (e) {
         await m.reply(e.toString());
@@ -132,7 +150,7 @@ async function saveig(url) {
         );
 
         const json = response.data;
-        const $ = cheerio.load(json.data);
+        const $ = cheerio.load(json);
         const data = $('div[class="download-items__btn"]').map((i, e) => ({
             type: $(e).find('a').attr('href').match('.jpg') ? 'image' : 'video',
             url: $(e).find('a').attr('href')
