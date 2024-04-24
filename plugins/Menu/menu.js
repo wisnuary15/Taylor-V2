@@ -186,8 +186,8 @@ let handler = async (m, {
         "sticker": "Sticker",
         "edukasi": "Edukasi",
         "quran": "Al Quran",
-        "ai": "AI",
-        "gpt": "GPT",
+        "ai": "Ai",
+        "gpt": "Gpt",
         "tools": "Tools",
         "kerang": "Kerang Ajaib",
         "primbon": "Primbon",
@@ -217,9 +217,9 @@ let handler = async (m, {
         "host": "Host",
         "Baileys": "Baileys",
         "store": "Store Menu",
-        "virus": "𐐪-〚 Virtex 〛-𐑂",
-        "thnks": "Thanks To",
-        "nocategory": "No Category",
+        "virus": "Virtex",
+        "thnks": "Thanks",
+        "nocategory": "No Category"
     }
     try {
         // DEFAULT MENU
@@ -325,7 +325,7 @@ let handler = async (m, {
         //---------------------
         let totalfeatures = Object.values(global.plugins).filter((v) => v.help && v.tags).length;
         let totalreg = Object.keys(glb).length
-        let rtotalreg = Object.values(glb).filter(user => user.registered == true).length
+        let rtotalreg = Object.values(glb).filter(user => user.registered === true).length
         let help = Object.values(global.plugins).filter(plugin => !plugin.disabled).map(plugin => {
             return {
                 help: Array.isArray(plugin.tags) ? plugin.help : [plugin.help],
@@ -345,7 +345,7 @@ let handler = async (m, {
         let header = conn.menu.header || defaultMenu.header
         let body = conn.menu.body || defaultMenu.body
         let footer = conn.menu.footer || defaultMenu.footer
-        let after = conn.menu.after || (conn.user.jid == global.conn.user.jid ? "" : `Powered by https://wa.me/${global.conn.user.jid.split`@`[0]}`) + defaultMenu.after
+        let after = conn.menu.after || (conn.user.jid === global.conn.user.jid ? "" : `Powered by https://wa.me/${global.conn.user.jid.split`@`[0]}`) + defaultMenu.after
         let _text = [
             before,
             ...Object.keys(tags).map(tag => {
@@ -368,7 +368,7 @@ let handler = async (m, {
             }),
             after
         ].join("\n")
-        let text = typeof conn.menu == "string" ? conn.menu : typeof conn.menu == "object" ? _text : ""
+        let text = typeof conn.menu === "string" ? conn.menu : typeof conn.menu === "object" ? _text : ""
         let replace = {
             "%": "%",
             p: _p,
@@ -430,22 +430,22 @@ let handler = async (m, {
         /*
         let pusat = ["ke1", "ke2", "ke3", "ke4", "ke5", "ke6"]
         let pilih = pusat.getRandom()
-        if (pilih == "ke1") {
+        if (pilih === "ke1") {
             await conn.sendButton(m.chat, text.trim(), author, knimg, [
                 [emojis + " All Menu", _p + "allmenu"],
                 [emojis + " List Menu", _p + "menulist"]
             ], fakes, fakefb)
         }
-        if (pilih == "ke2") {
+        if (pilih === "ke2") {
             await conn.send2ButtonLoc(m.chat, knimg, text.trim(), author, emojis + " All Menu", _p + "allmenu", emojis + " List Menu", _p + "menulist", fakes, fakefb)
         }
-        if (pilih == "ke3") {
+        if (pilih === "ke3") {
             await conn.send2ButtonVid(m.chat, knimg, text.trim(), author, emojis + " All Menu", _p + "allmenu", emojis + " List Menu", _p + "menulist", fakes, adReplyS)
         }
-        if (pilih == "ke4") {
+        if (pilih === "ke4") {
             await conn.sendTemplateButtonLoc(m.chat, knimg, text.trim(), author, emojis + " List Menu", _p + "menulist", fakes, fakefb)
         }
-        if (pilih == "ke5") {
+        if (pilih === "ke5") {
             await conn.relayMessage(m.chat, {
                 requestPaymentMessage: {
                     currencyCodeIso4217: "USD",
@@ -465,7 +465,7 @@ let handler = async (m, {
                 }
             }, {})
         }
-        if (pilih == "ke6") {
+        if (pilih === "ke6") {
             await conn.send2ButtonDoc(m.chat, text.trim(), author, emojis + " All Menu", _p + "allmenu", emojis + " List Menu", _p + "menulist", fakes, adReply)
         }
         

@@ -167,7 +167,7 @@ let handler = async (m, {
     let pp = [thumbdoc, thumb].getRandom() || fla + "menu " + teks
     let arrayMenu = ["all", "absen", "admin", "advanced", "anonymous", "audio", "ai", "gpt", "Baileys", "database", "downloader", "edukasi", "fun", "game", "genshin", "group", "host", "info", "internet", "jadian", "jadibot", "kerang", "main", "maker", "music", "nocategory", "nsfw", "nulis", "owner", "premium", "primbon", "quotes", "quran", "random", "rpg", "sticker", "tools", "vote", "xp", "store", "virus", "thnks"]
     if (!arrayMenu.includes(teks)) teks = "404"
-    if (teks == "all") tags = {
+    if (teks === "all") tags = {
         "main": "Main",
         "rpg": "RolePlay Games",
         "xp": "Exp & Limit",
@@ -175,14 +175,14 @@ let handler = async (m, {
         "sticker": "Sticker",
         "edukasi": "Edukasi",
         "quran": "Al Quran",
-        "ai": "AI",
-        "gpt": "GPT",
+        "ai": "Ai",
+        "gpt": "Gpt",
         "tools": "Tools",
         "kerang": "Kerang Ajaib",
         "primbon": "Primbon",
         "fun": "Fun",
         "game": "Game",
-        "genshin": "GENSHIN IMPACT",
+        "genshin": "Genshin Impact",
         "quotes": "Quotes",
         "audio": "Audio",
         "maker": "Maker",
@@ -206,131 +206,131 @@ let handler = async (m, {
         "host": "Host",
         "Baileys": "Baileys",
         "store": "Store Menu",
-        "virus": "𐐪-〚 Virtex 〛-𐑂",
-        "thnks": "Thanks To",
-        "nocategory": "No Category",
+        "virus": "Virtex",
+        "thnks": "Thanks",
+        "nocategory": "No Category"
     }
-    if (teks == "absen") tags = {
+    if (teks === "absen") tags = {
         "absen": "Absen"
     }
-    if (teks == "admin") tags = {
+    if (teks === "admin") tags = {
         "admin": "Admin"
     }
-    if (teks == "advanced") tags = {
+    if (teks === "advanced") tags = {
         "advanced": "Advanced"
     }
-    if (teks == "anonymous") tags = {
+    if (teks === "anonymous") tags = {
         "anonymous": "Anonymous Chat"
     }
-    if (teks == "audio") tags = {
+    if (teks === "audio") tags = {
         "audio": "Audio"
     }
-    if (teks == "Baileys") tags = {
+    if (teks === "Baileys") tags = {
         "Baileys": "Baileys"
     }
-    if (teks == "database") tags = {
+    if (teks === "database") tags = {
         "database": "Database"
     }
-    if (teks == "downloader") tags = {
+    if (teks === "downloader") tags = {
         "downloader": "Downloader"
     }
-    if (teks == "edukasi") tags = {
+    if (teks === "edukasi") tags = {
         "edukasi": "Edukasi"
     }
-    if (teks == "fun") tags = {
+    if (teks === "fun") tags = {
         "fun": "Fun"
     }
-    if (teks == "game") tags = {
+    if (teks === "game") tags = {
         "game": "Game"
     }
-    if (teks == "genshin") tags = {
+    if (teks === "genshin") tags = {
         "genshin": "Genshin Impact"
     }
-    if (teks == "group") tags = {
+    if (teks === "group") tags = {
         "group": "Group"
     }
-    if (teks == "host") tags = {
+    if (teks === "host") tags = {
         "host": "Host"
     }
-    if (teks == "info") tags = {
+    if (teks === "info") tags = {
         "info": "Info"
     }
-    if (teks == "internet") tags = {
+    if (teks === "internet") tags = {
         "internet": "Internet"
     }
-    if (teks == "jadian") tags = {
+    if (teks === "jadian") tags = {
         "jadian": "Jadian"
     }
-    if (teks == "jadibot") tags = {
+    if (teks === "jadibot") tags = {
         "jadibot": "Jadi Bot"
     }
-    if (teks == "kerang") tags = {
+    if (teks === "kerang") tags = {
         "kerang": "Kerang Ajaib"
     }
-    if (teks == "main") tags = {
+    if (teks === "main") tags = {
         "main": "Main"
     }
-    if (teks == "maker") tags = {
+    if (teks === "maker") tags = {
         "maker": "Maker"
     }
-    if (teks == "music") tags = {
+    if (teks === "music") tags = {
         "music": "Music"
     }
-    if (teks == "nsfw") tags = {
+    if (teks === "nsfw") tags = {
         "nsfw": "Nsfw"
     }
-    if (teks == "nulis") tags = {
+    if (teks === "nulis") tags = {
         "nulis": "MagerNulis & Logo"
     }
-    if (teks == "owner") tags = {
+    if (teks === "owner") tags = {
         "owner": "Owner"
     }
-    if (teks == "premium") tags = {
+    if (teks === "premium") tags = {
         "premium": "Premium"
     }
-    if (teks == "primbon") tags = {
+    if (teks === "primbon") tags = {
         "primbon": "Primbon"
     }
-    if (teks == "quotes") tags = {
+    if (teks === "quotes") tags = {
         "quotes": "Quotes"
     }
-    if (teks == "quran") tags = {
+    if (teks === "quran") tags = {
         "quran": "Al Quran"
     }
-    if (teks == "ai") tags = {
+    if (teks === "ai") tags = {
         "ai": "AI"
     }
-    if (teks == "gpt") tags = {
+    if (teks === "gpt") tags = {
         "gpt": "GPT"
     }
-    if (teks == "random") tags = {
+    if (teks === "random") tags = {
         "random": "Random"
     }
-    if (teks == "rpg") tags = {
+    if (teks === "rpg") tags = {
         "rpg": "RolePlay Games"
     }
-    if (teks == "sticker") tags = {
+    if (teks === "sticker") tags = {
         "sticker": "Sticker"
     }
-    if (teks == "tools") tags = {
+    if (teks === "tools") tags = {
         "tools": "Tools"
     }
-    if (teks == "vote") tags = {
+    if (teks === "vote") tags = {
         "vote": "Voting"
     }
-    if (teks == "xp") tags = {
+    if (teks === "xp") tags = {
         "xp": "Exp & Limit"
     }
-    if (teks == "store") tags = {
+    if (teks === "store") tags = {
         "store": "Store Menu"
     }
-    if (teks == "virus") tags = {
+    if (teks === "virus") tags = {
         "virus": "𐐪-〚 Virtex 〛-𐑂"
     }
-    if (teks == "thnks") tags = {
+    if (teks === "thnks") tags = {
         "thnks": "Thanks To"
     }
-    if (teks == "nocategory") tags = {
+    if (teks === "nocategory") tags = {
         "nocategory": "No Category"
     }
     try {
@@ -684,7 +684,7 @@ let handler = async (m, {
 ${spas} *[ U S E R  I N F O ]*
 👥 *ɴᴀᴍᴇ:* ${usrs.registered ? usrs.name : conn.getName(m.sender)}
 📧 *ᴛᴀɢs:* @${m.sender.split`@`[0]}
-🔒 *sᴛᴀᴛᴜs:* ${m.sender.split`@`[0] == nomorown ? "Developer" : (usrs.premiumTime >= 1 ? "Premium User" : "Free User")}
+🔒 *sᴛᴀᴛᴜs:* ${m.sender.split`@`[0] === nomorown ? "Developer" : (usrs.premiumTime >= 1 ? "Premium User" : "Free User")}
 💎 *ᴘʀᴇᴍɪᴜᴍ:* ${usrs.premiumTime > 1 ? "Yes": "No"}
 
 ${spas} *[ S T A T U S  I N F O ]*
@@ -705,7 +705,7 @@ ${clockStringP(usrs.premiumTime - new Date())}` : ""}
             buttonText: " CLICK HERE " + emojis,
             sections
         }
-        if (teks == "404") {
+        if (teks === "404") {
             let sects = sections[2].rows.map((v, index) => {
                 return `${v.title.slice(16)}
 ${v.rowId}`.trim()
@@ -841,7 +841,7 @@ ${v.rowId}`.trim()
         /* Info Total */
         let totalfeatures = Object.values(global.plugins).filter((v) => v.help && v.tags).length;
         let totalreg = Object.keys(glb).length
-        let rtotalreg = Object.values(glb).filter(user => user.registered == true).length
+        let rtotalreg = Object.values(glb).filter(user => user.registered === true).length
         let help = Object.values(global.plugins).filter(plugin => !plugin.disabled).map(plugin => {
             return {
                 help: Array.isArray(plugin.tags) ? plugin.help : [plugin.help],
@@ -864,7 +864,7 @@ ${v.rowId}`.trim()
         let header = conn.menu.header || defaultMenu.header
         let body = conn.menu.body || defaultMenu.body
         let footer = conn.menu.footer || defaultMenu.footer
-        let after = conn.menu.after || (conn.user.jid == global.conn.user.jid ? "" : `Powered by https://wa.me/${global.conn.user.jid.split`@`[0]}`) + defaultMenu.after
+        let after = conn.menu.after || (conn.user.jid === global.conn.user.jid ? "" : `Powered by https://wa.me/${global.conn.user.jid.split`@`[0]}`) + defaultMenu.after
         let _text = [
             before,
             ...Object.keys(tags).map(tag => {
@@ -887,7 +887,7 @@ ${v.rowId}`.trim()
             }),
             after
         ].join("\n")
-        let text = typeof conn.menu == "string" ? conn.menu : typeof conn.menu == "object" ? _text : ""
+        let text = typeof conn.menu === "string" ? conn.menu : typeof conn.menu === "object" ? _text : ""
         let replace = {
             "%": "%",
             p: _p,

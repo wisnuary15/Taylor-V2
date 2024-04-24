@@ -91,7 +91,7 @@ let handler = async (m, {
     ].getRandom()
     let vn = "https://raw.githubusercontent.com/AyGemuy/HAORI-API/main/audio/" + soun + ".mp3"
 
-    const caption = `*\`🌟 Selamat datang di dashboard bot pertama kami\`*!\n\n> ────────────────\n         Kami harap Anda menikmati pengalaman pertama berinteraksi dengan chatbot kami yang ramah dan intuitif. ${readMore}\n\nKami telah menyertakan berbagai fitur untuk membantu Anda mengelola dan meningkatkan kinerja bot Anda.\n\n         Semoga Anda menikmati menggunakan dashboard chatbot kami dan mendapatkan manfaat dari fitur-fitur yang kami tawarkan.\n> ────────────────\n\n\n         *\`[ LIST MENU ]\`*\n- ${usedPrefix}menulist\n- ${usedPrefix}allmenu\n`;
+    const caption = `*\`🌟 Selamat datang di dashboard bot pertama kami\`*!\n\n> ────────────────\n- 1. Kami harap Anda menikmati pengalaman pertama berinteraksi dengan chatbot kami yang ramah dan intuitif. ${readMore}\n\n- 2. Kami telah menyertakan berbagai fitur untuk membantu Anda mengelola dan meningkatkan kinerja bot Anda.\n\n- 3. Semoga Anda menikmati menggunakan dashboard chatbot kami dan mendapatkan manfaat dari fitur-fitur yang kami tawarkan.\n> ────────────────\n\n\n         *\`[ LIST MENU ]\`*\n- ${usedPrefix}menulist\n- ${usedPrefix}allmenu\n`;
 
     conn.temamenu = conn.temamenu ? conn.temamenu : {
         id: 1

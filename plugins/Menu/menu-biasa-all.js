@@ -186,8 +186,8 @@ let handler = async (m, {
         "sticker": "Sticker",
         "edukasi": "Edukasi",
         "quran": "Al Quran",
-        "ai": "AI",
-        "gpt": "GPT",
+        "ai": "Ai",
+        "gpt": "Gpt",
         "tools": "Tools",
         "kerang": "Kerang Ajaib",
         "primbon": "Primbon",
@@ -217,9 +217,9 @@ let handler = async (m, {
         "host": "Host",
         "Baileys": "Baileys",
         "store": "Store Menu",
-        "virus": "𐐪-〚 Virtex 〛-𐑂",
-        "thnks": "Thanks To",
-        "nocategory": "No Category",
+        "virus": "Virtex",
+        "thnks": "Thanks",
+        "nocategory": "No Category"
     }
     try {
         // DEFAULT MENU
@@ -325,7 +325,7 @@ let handler = async (m, {
         //---------------------
         let totalfeatures = Object.values(global.plugins).filter((v) => v.help && v.tags).length;
         let totalreg = Object.keys(glb).length
-        let rtotalreg = Object.values(glb).filter(user => user.registered == true).length
+        let rtotalreg = Object.values(glb).filter(user => user.registered === true).length
         let help = Object.values(global.plugins).filter(plugin => !plugin.disabled).map(plugin => {
             return {
                 help: Array.isArray(plugin.tags) ? plugin.help : [plugin.help],
@@ -345,7 +345,7 @@ let handler = async (m, {
         let header = conn.menu.header || defaultMenu.header
         let body = conn.menu.body || defaultMenu.body
         let footer = conn.menu.footer || defaultMenu.footer
-        let after = conn.menu.after || (conn.user.jid == global.conn.user.jid ? "" : `Powered by https://wa.me/${global.conn.user.jid.split`@`[0]}`) + defaultMenu.after
+        let after = conn.menu.after || (conn.user.jid === global.conn.user.jid ? "" : `Powered by https://wa.me/${global.conn.user.jid.split`@`[0]}`) + defaultMenu.after
         let _text = [
             before,
             ...Object.keys(tags).map(tag => {
@@ -368,7 +368,7 @@ let handler = async (m, {
             }),
             after
         ].join("\n")
-        let text = typeof conn.menu == "string" ? conn.menu : typeof conn.menu == "object" ? _text : ""
+        let text = typeof conn.menu === "string" ? conn.menu : typeof conn.menu === "object" ? _text : ""
         let replace = {
             "%": "%",
             p: _p,
