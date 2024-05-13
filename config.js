@@ -1,8 +1,4 @@
-import {
-    watchFile,
-    unwatchFile,
-    readFileSync
-} from "fs"
+import fs from "fs"
 import chalk from "chalk"
 import {
     fileURLToPath
@@ -92,9 +88,9 @@ async function loadConfig() {
         global.wm3 = htjava + " ᴛᴀyʟᴏʀ-ʙᴏᴛ"
 
         /** Thumbnail  **/
-        global.giflogo = VideoGalau()
-        global.fla = pickRandom(ImgLogoFlam())
-        global.flaaa = ImgLogoDynamic()
+        global.giflogo = (await VideoGalau())
+        global.fla = pickRandom((await ImgLogoFlam()))
+        global.flaaa = (await ImgLogoDynamic())
 
         /** Link  **/
         global.sig = "https://www.instagram.com/wudysoft"
@@ -129,20 +125,20 @@ async function loadConfig() {
         global.htka = "』───" + htjava
 
         /** Thumbnail  **/
-        global.hwaifu = ImgWaifu()
-        global.hbeach = ImgCosplay()
-        global.thumbnailUrl = ImgBoneka()
-        global.hoppai = ImgCosplay()
-        global.hloli = ImgCosplay()
-        global.hyuri = ImgCosplay()
-        global.hneko = ImgCosplay()
-        global.hLokun = ImgCosplay()
-        global.hbunny = ImgCosplay()
-        global.thumbs = ImgBoneka()
-        global.thumb = pickRandom(["https://minimalistic-wallpaper.demolab.com/?random", "https://picsum.photos/2560/1600", ImgEstetik()])
-        global.imagebot = pickRandom(["https://minimalistic-wallpaper.demolab.com/?random", "https://picsum.photos/2560/1600", ImgMountain()])
-        global.thumbdoc = pickRandom(["https://minimalistic-wallpaper.demolab.com/?random", "https://picsum.photos/2560/1600", ImgEstetik()])
-        global.logo = pickRandom(["https://minimalistic-wallpaper.demolab.com/?random", "https://picsum.photos/2560/1600", ImgMountain()])
+        global.hwaifu = (await ImgWaifu())
+        global.hbeach = (await ImgCosplay())
+        global.thumbnailUrl = (await ImgBoneka())
+        global.hoppai = (await ImgCosplay())
+        global.hloli = (await ImgCosplay())
+        global.hyuri = (await ImgCosplay())
+        global.hneko = (await ImgCosplay())
+        global.hLokun = (await ImgCosplay())
+        global.hbunny = (await ImgCosplay())
+        global.thumbs = (await ImgBoneka())
+        global.thumb = pickRandom(["https://minimalistic-wallpaper.demolab.com/?random", "https://picsum.photos/2560/1600", (await ImgEstetik())])
+        global.imagebot = pickRandom(["https://minimalistic-wallpaper.demolab.com/?random", "https://picsum.photos/2560/1600", (await ImgMountain())])
+        global.thumbdoc = pickRandom(["https://minimalistic-wallpaper.demolab.com/?random", "https://picsum.photos/2560/1600", (await ImgEstetik())])
+        global.logo = pickRandom(["https://minimalistic-wallpaper.demolab.com/?random", "https://picsum.photos/2560/1600", (await ImgMountain())])
 
         /** Begin  **/
         global.ucapan = Pagi()
@@ -151,7 +147,7 @@ async function loadConfig() {
         /** Global Random  **/
         global.doc = pickRandom(["application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.ms-excel", "application/msword", "application/pdf", "text/rtf"])
 
-        global.knimg = pickRandom(["https://minimalistic-wallpaper.demolab.com/?random", "https://picsum.photos/2560/1600", ImgMountain()])
+        global.knimg = pickRandom(["https://minimalistic-wallpaper.demolab.com/?random", "https://picsum.photos/2560/1600", (await ImgMountain())])
 
         /** Watermark  **/
         global.lopr = "🅟"
@@ -318,8 +314,8 @@ export {
 }
 
 const file = fileURLToPath(import.meta.url)
-watchFile(file, () => {
-    unwatchFile(file)
+fs.watchFile(file, () => {
+    fs.unwatchFile(file)
     console.log(chalk.redBright("Update config.js"))
     import(`${file}?update=${Date.now()}`)
 })
@@ -342,59 +338,52 @@ function pickRandom(list) {
 }
 
 /** Img Array  **/
-function ImgCosplay() {
-    const { cosplay } = JSON.parse(readFileSync('./json/image/image.json'))
-    return ArrImg
+async function ImgCosplay() {
+    const { cosplay } = JSON.parse(await fs.readFileSync('./json/image/image.json'))
+    return cosplay
 }
 
 /** Img Array  **/
-function ImgMountain() {
-const { mountain } = JSON.parse(readFileSync('./json/image/image.json'))
-    const ResNo = pickRandom(mountain)
-    return ResNo
+async function ImgMountain() {
+const { mountain } = JSON.parse(await fs.readFileSync('./json/image/image.json'))
+    return pickRandom(mountain)
 }
 
 /** Img Dynamic  **/
-function ImgLogoDynamic() {
-const { dynamic } = JSON.parse(readFileSync('./json/image/image.json'))
-    const randomId = pickRandom(dynamic)
-    return `https://dynamic.brandcrowd.com/asset/logo/${randomId}/logo?v=4&text=`
+async function ImgLogoDynamic() {
+const { dynamic } = JSON.parse(await fs.readFileSync('./json/image/image.json'))
+    return `https://dynamic.brandcrowd.com/asset/logo/${pickRandom(dynamic)}/logo?v=4&text=`
 }
 
 /** Img Flamming  **/
-function ImgLogoFlam() {
-const { flamming } = JSON.parse(readFileSync('./json/image/image.json'))
-    const Flam = flamming
-    return Flam
+async function ImgLogoFlam() {
+const { flamming } = JSON.parse(await fs.readFileSync('./json/image/image.json'))
+    return flamming
 }
 
 /** Img Array  **/
-function VideoGalau() {
-const { galau } = JSON.parse(readFileSync('./json/image/image.json'))
-    const idGalau = pickRandom(galau)
-    return `https://telegra.ph/file/${idGalau}.mp4`
+async function VideoGalau() {
+const { galau } = JSON.parse(await fs.readFileSync('./json/image/image.json'))
+    return `https://telegra.ph/file/${pickRandom(galau)}.mp4`
 }
 
 /** Img Array  **/
-function ImgEstetik() {
-const { estetik } = JSON.parse(readFileSync('./json/image/image.json'))
-    const DocImg = pickRandom(estetik)
-    return DocImg
+async function ImgEstetik() {
+const { estetik } = JSON.parse(await fs.readFileSync('./json/image/image.json'))
+    return pickRandom(estetik)
 }
 
 /** Img Array  **/
-function ImgWaifu() {
-const { waifu } = JSON.parse(readFileSync('./json/image/image.json'))
-    const Waif = waifu
-    return Waif
+async function ImgWaifu() {
+const { waifu } = JSON.parse(await fs.readFileSync('./json/image/image.json'))
+    return waifu
 }
 
 
 /** Img Array  **/
-function ImgBoneka() {
-const { boneka } = JSON.parse(readFileSync('./json/image/image.json'))
-    const Boneka = boneka
-    return Boneka
+async function ImgBoneka() {
+const { boneka } = JSON.parse(await fs.readFileSync('./json/image/image.json'))
+    return boneka
 }
 
 /** Apa Kabar  **/
