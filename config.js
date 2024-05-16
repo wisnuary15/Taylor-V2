@@ -22,11 +22,9 @@ const {
     estetik,
     waifu,
     boneka
-} = JSON.parse(readFileSync("./json/image/image.json", {
-    encoding: "utf-8"
-}));
+} = JSON.parse(readFileSync("./json/image/image.json"));
 
-function loadConfig() {
+async function loadConfig() {
     try {
 
         /** custom colors for beautiful console.log()  **/

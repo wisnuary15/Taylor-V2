@@ -207,7 +207,7 @@ const PORT = process.env.PORT || process.env.SERVER_PORT || 3000
 
 protoType();
 serialize();
-loadConfig();
+await loadConfig();
 
 global.API = Helper.API
 Object.assign(global, {
@@ -706,6 +706,11 @@ const runTasks = async () => {
         {
             func: writeDatabase,
             message: 'Write database',
+            style: chalk.bgBlue.bold
+        },
+        {
+            func: loadConfig,
+            message: 'Reload Config',
             style: chalk.bgBlue.bold
         },
         {
