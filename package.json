@@ -40,7 +40,7 @@
     },
     "license": "GPL-3.0-or-later",
     "dependencies": {
-        "@whiskeysockets/baileys": "*",
+        "@whiskeysockets/baileys": "github:w3nder/Baileys#patch-1",
         "@adiwajshing/keyed-db": "^0.2.4",
         "@bochilteam/scraper": "*",
         "@prevter/tiktok-scraper": "*",
