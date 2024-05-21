@@ -1,68 +1,55 @@
-import fetch from 'node-fetch'
-import {
-    JSDOM
-} from 'jsdom'
+import fetch from 'node-fetch';
+import cheerio from 'cheerio';
 
-let handler = async (m, {
-    conn,
-    text
-}) => {
-    let teks = text ? text.trim() : m.quoted && m.quoted.text ? m.quoted.text : m.text
+let handler = async (m, { conn, text }) => {
+    let teks = text?.trim() || m.quoted?.text || m.text;
 
     if (teks.includes('|')) {
-        let [nama, urutan] = teks.split('|')
-        if (urutan && /^\d+$/.test(urutan)) {
-            let caption = await stylizeText(nama.trim())
-            let msg = Object.entries(caption).map(([key, value]) => ({
-                key,
-                value
-            }))
-            let selectedObj = msg[parseInt(urutan) - 1]
-            if (selectedObj) {
-                let list = `🎨 *Gaya Terpilih* 🎨\n\n` +
-                    `🔢 *Nomor:* [${urutan}]\n` +
-                    `📛 *Nama:* ${selectedObj.key}\n` +
-                    `📋 *Isi:* ${selectedObj.value}\n\n` +
-                    `🎉 Nikmati gaya tersebut! 🎉`
-                return m.reply(list)
-            } else {
-                return m.reply('Nomor gaya tidak valid. Silakan coba nomor gaya lain.')
-            }
+        let [nama, urutan] = teks.split('|').map(s => s.trim());
+        if (/^\d+$/.test(urutan)) {
+            let caption = await stylizeText(nama);
+            let selectedObj = caption[parseInt(urutan) - 1];
+            return selectedObj
+                ? m.reply(formatSelectedStyle(selectedObj, urutan))
+                : m.reply('Nomor gaya tidak valid. Silakan coba nomor gaya lain.');
         }
     }
 
-    let caption = await stylizeText(teks)
-    let msg = Object.entries(caption).map(([nama, isi], index) =>
-        `🔢 *Nomor:* [${index + 1}]\n` +
-        `📛 *Nama:* ${nama}\n` +
-        `📋 *Isi:* ${isi}\n\n`
-    );
+    let caption = await stylizeText(teks);
+    return m.reply(formatStyleList(caption));
+};
 
-    let list = `📜 *Daftar Gaya* 📜\n\n` +
-        `⚡ Berikut adalah daftar gaya yang tersedia:\n\n` +
-        `${msg.join('')}` +
-        `🌟 Pilih gaya dengan menggunakan perintah *style [teks]|[nomor]* 🌟`
+handler.help = ['style <teks>'];
+handler.tags = ['tools'];
+handler.command = /^(style(text)?)$/i;
+handler.exp = 0;
 
-    return m.reply(list)
+export default handler;
+
+const stylizeText = async (query) => {
+    try {
+        const response = await fetch(`http://qaz.wtf/u/convert.cgi?text=${encodeURIComponent(query)}`);
+        const html = await response.text();
+        const $ = cheerio.load(html);
+
+        return $('table tr').map((i, row) => {
+            const cells = $(row).find('td');
+            return cells.length > 1 ? {
+                name: $(cells[0]).find('.aname').text() || $(cells[0]).text(),
+                value: $(cells[1]).html().trim()
+            } : null;
+        }).get().filter(Boolean);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw new Error('Failed to fetch and process data');
+    }
+};
+
+function formatSelectedStyle(selectedObj, urutan) {
+    return `🎨 *Gaya Terpilih* 🎨\n\n🔢 *Nomor:* [${urutan}]\n📛 *Nama:* ${selectedObj.name}\n📋 *Isi:* ${selectedObj.value}\n\n🎉 Nikmati gaya tersebut! 🎉`;
 }
 
-handler.help = ['style'].map(v => v + ' <teks>')
-handler.tags = ['tools']
-handler.command = /^(style(text)?)$/i
-handler.exp = 0
-
-export default handler
-
-async function stylizeText(text) {
-    let res = await fetch('http://qaz.wtf/u/convert.cgi?text=' + encodeURIComponent(text))
-    let html = await res.text()
-    let dom = new JSDOM(html)
-    let table = dom.window.document.querySelector('table').children[0].children
-    let obj = {}
-    for (let tr of table) {
-        let name = tr.querySelector('.aname').innerHTML
-        let content = tr.children[1].textContent.replace(/^\n/, '').replace(/\n$/, '')
-        obj[name + (obj[name] ? ' Terbalik' : '')] = content
-    }
-    return obj
+function formatStyleList(caption) {
+    return `📜 *Daftar Gaya* 📜\n\n⚡ Berikut adalah daftar gaya yang tersedia:\n\n${caption.map(({ name, value }, index) =>
+        `🔢 *Nomor:* [${index + 1}]\n📛 *Nama:* ${name}\n📋 *Isi:* ${value}\n\n`).join('')}🌟 Pilih gaya dengan menggunakan perintah *style [teks]|[nomor]* 🌟`;
 }
