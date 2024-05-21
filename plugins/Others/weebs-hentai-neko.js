@@ -293,21 +293,21 @@ let handler = async (m, {
                     if (ahegao == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(xres + 'ahegao' + xapi)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(xres + 'ahegao' + xapi)).arrayBuffer(), m)
                     break
 
                 case 'anal':
                     if (anal == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(resl + 'anal' + apil)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(resl + 'anal' + apil)).arrayBuffer(), m)
                     break
 
                 case 'ass':
                     if (ass == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(xres + 'ass' + xapi)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(xres + 'ass' + xapi)).arrayBuffer(), m)
                     break
 
                 case 'blowjob':
@@ -322,210 +322,210 @@ let handler = async (m, {
                     if (cums == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(resl + 'cum' + apil)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(resl + 'cum' + apil)).arrayBuffer(), m)
                     break
 
                 case 'ecchi':
                     if (ecchi == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(res + 'ecchi' + api)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(res + 'ecchi' + api)).arrayBuffer(), m)
                     break
 
                 case 'ero':
                     if (ero == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(xres + 'ero' + xapi)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(xres + 'ero' + xapi)).arrayBuffer(), m)
                     break
 
                 case 'erofeet':
                     if (erofeet == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(res + 'feet' + api)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(res + 'feet' + api)).arrayBuffer(), m)
                     break
 
                 case 'erogirl':
                     if (erogirl == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(res + 'lewdanimegirls' + api)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(res + 'lewdanimegirls' + api)).arrayBuffer(), m)
                     break
 
                 case 'holoero':
                     if (holoero == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(res + 'holo' + api)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(res + 'holo' + api)).arrayBuffer(), m)
                     break
 
                 case 'erokitsune':
                     if (erokitsune == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(resl + 'erok' + apil)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(resl + 'erok' + apil)).arrayBuffer(), m)
                     break
 
                 case 'eroneko':
                     if (eroneko == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(resl + 'eron' + apil)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(resl + 'eron' + apil)).arrayBuffer(), m)
                     break
 
                 case 'eroyuri':
                     if (eroyuri == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(res + 'eroYuri' + api)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(res + 'eroYuri' + api)).arrayBuffer(), m)
                     break
 
                 case 'feet':
                     if (feet == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(res + 'feet' + api)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(res + 'feet' + api)).arrayBuffer(), m)
                     break
 
                 case 'femdom':
                     if (femdom == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(res + 'femdom' + api)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(res + 'femdom' + api)).arrayBuffer(), m)
                     break
 
                 case 'futanari':
                     if (futanari == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(res + 'futanari' + api)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(res + 'futanari' + api)).arrayBuffer(), m)
                     break
 
                 case 'girlsolo':
                     if (girlsolo == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(resl + 'solo' + apil)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(resl + 'solo' + apil)).arrayBuffer(), m)
                     break
 
                 case 'hentai':
                     if (hentai == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(xres + 'hentai' + xapi)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(xres + 'hentai' + xapi)).arrayBuffer(), m)
                     break
 
                 case 'holo':
                     if (holo == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(res + 'hololewd' + api)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(res + 'hololewd' + api)).arrayBuffer(), m)
                     break
 
                 case 'jahy':
                     if (jahy == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(xres + 'jahy' + xapi)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(xres + 'jahy' + xapi)).arrayBuffer(), m)
                     break
 
                 case 'kitsune':
                     if (kitsune == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(res + 'kitsune' + api)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(res + 'kitsune' + api)).arrayBuffer(), m)
                     break
 
                 case 'kuni':
                     if (kuni == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(resl + 'kuni' + apil)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(resl + 'kuni' + apil)).arrayBuffer(), m)
                     break
 
                 case 'loli':
                     if (loli == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(res + 'loli' + api)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(res + 'loli' + api)).arrayBuffer(), m)
                     break
 
                 case 'manga':
                     if (manga == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(xres + 'manga' + xapi)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(xres + 'manga' + xapi)).arrayBuffer(), m)
                     break
 
                 case 'milf':
                     if (milf == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(res + 'milf' + api)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(res + 'milf' + api)).arrayBuffer(), m)
                     break
 
                 case 'mstrb':
                     if (mstrb == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(xres + 'mstrb' + xapi)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(xres + 'mstrb' + xapi)).arrayBuffer(), m)
                     break
 
                 case 'neko':
                     if (neko == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(xres + 'nsfwneko' + xapi)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(xres + 'nsfwneko' + xapi)).arrayBuffer(), m)
                     break
 
                 case 'oppai':
                     if (oppai == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(res + 'sideoppai' + api)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(res + 'sideoppai' + api)).arrayBuffer(), m)
                     break
 
                 case 'panties':
                     if (panties == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(xres + 'panties' + xapi)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(xres + 'panties' + xapi)).arrayBuffer(), m)
                     break
 
                 case 'pussy':
                     if (pussy == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(xres + 'pussy' + xapi)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(xres + 'pussy' + xapi)).arrayBuffer(), m)
                     break
 
                 case 'spank':
                     if (spank == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(res + 'spank' + api)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(res + 'spank' + api)).arrayBuffer(), m)
                     break
 
                 case 'tentacles':
                     if (tentacles == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(xres + 'tentacles' + xapi)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(xres + 'tentacles' + xapi)).arrayBuffer(), m)
                     break
 
                 case 'tits':
                     if (tits == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(res + 'tits' + api)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(res + 'tits' + api)).arrayBuffer(), m)
                     break
 
                 case 'thighs':
                     if (thighs == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(xres + 'thighs' + xapi)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(xres + 'thighs' + xapi)).arrayBuffer(), m)
                     break
 
                 case 'trap':
@@ -540,7 +540,7 @@ let handler = async (m, {
                     if (uniform == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(xres + 'uniform' + xapi)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(xres + 'uniform' + xapi)).arrayBuffer(), m)
                     break
 
                 case 'waifu':
@@ -555,14 +555,14 @@ let handler = async (m, {
                     if (yuri == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(res + 'yaoi' + api)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(res + 'yaoi' + api)).arrayBuffer(), m)
                     break
 
                 case 'yuri':
                     if (yuri == true) {
                         if (global.db.data.users[m.sender].premiumTime < 1) return conn.reply(m.chat, txtprem, m)
                     }
-                    conn.sendFile(m.chat, await (await fetch(res + 'yuri' + api)).buffer(), m)
+                    conn.sendFile(m.chat, await (await fetch(res + 'yuri' + api)).arrayBuffer(), m)
                     break
 
                 default:
@@ -570,7 +570,7 @@ let handler = async (m, {
             [listMessage.text, listMessage.footer, null, [
                 ], null, null,
                 [
-                    [listMessage.buttonText, sections.rows]
+                    [listMessage.buttonText, sections]
                 ]
             ]
         ], m);
