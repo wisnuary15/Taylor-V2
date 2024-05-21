@@ -9,6 +9,8 @@ import {
 } from "url";
 
 import moment from "moment-timezone";
+moment.locale('id');
+
 import colors from "colors";
 import {
     WA_DEFAULT_EPHEMERAL

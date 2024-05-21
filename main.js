@@ -65,6 +65,9 @@ import {
 import pino from 'pino';
 import pretty from 'pino-pretty';
 import fetch from 'node-fetch';
+import moment from "moment-timezone";
+moment.locale('id');
+
 const stream = pretty({
     colorize: true,
     levelFirst: false,
@@ -572,8 +575,8 @@ async function connectionUpdate(update) {
             const formattedPingSpeed = pingSpeed < 0 ? 'N/A' : `${pingSpeed}ms`;
 
             console.log("Taylor-V2".main, ">>".yellow, `Client connected on: ${conn?.user?.id.split(":")[0] || global.namebot}`.info);
-            const infoMsg = `🤖 *Bot Info* 🤖\n🕰️ *Current Time:* ${currentTime}\n👤 *Name:* *${name || 'Taylor'}*\n🏷️ *Tag:* *@${jid.split('@')[0]}*\n⚡ *Ping Speed:* *${formattedPingSpeed}*\n📅 *Date:* ${currentTime.toDateString()}\n🕒 *Time:* ${currentTime.toLocaleTimeString()}\n📆 *Day:* ${currentTime.toLocaleDateString('id-ID', { weekday: 'long' })}\n📝 *Description:* Bot *${name || 'Taylor'}* is now active.`;
-
+            let currentTime = moment.tz("Asia/Makassar")
+    const infoMsg = `🤖 *Bot Info* 🤖\n🕰️ *Current Time:* ${currentTime.format('HH:mm:ss')}\n👤 *Name:* *${name || 'Taylor'}*\n🏷️ *Tag:* *@${jid.split('@')[0]}*\n⚡ *Ping Speed:* *${formattedPingSpeed}*\n📅 *Date:* ${currentTime.format('YYYY-MM-DD')}\n🕒 *Time:* ${currentTime.format('HH:mm:ss')}\n📆 *Day:* ${currentTime.format('dddd')}\n📝 *Description:* Bot *${name || 'Taylor'}* is now active.`;
             const messg = await conn.sendMessage(`${nomorown}@s.whatsapp.net`, {
                 text: infoMsg,
                 mentions: [nomorown + '@s.whatsapp.net', jid]

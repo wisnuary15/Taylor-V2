@@ -1113,8 +1113,7 @@ export async function handler(chatUpdate) {
                     continue
             }
             if (typeof plugin !== "function") continue
-
-
+            if (m.isBaileys) return;
             if (opts && match && m) {
                 let result = ((opts?.['multiprefix'] ?? true) && (match[0] || "")[0]) || ((opts?.['noprefix'] ?? false) ? null : (match[0] || "")[0]);
                 usedPrefix = result;
