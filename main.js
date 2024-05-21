@@ -570,13 +570,12 @@ async function connectionUpdate(update) {
             const name = await conn.getName(jid);
             conn.user.name = name || 'Taylor-V2';
 
-            const currentTime = new Date();
+            const currentTime = moment.tz("Asia/Makassar");
             const pingSpeed = new Date() - currentTime;
             const formattedPingSpeed = pingSpeed < 0 ? 'N/A' : `${pingSpeed}ms`;
 
             console.log("Taylor-V2".main, ">>".yellow, `Client connected on: ${conn?.user?.id.split(":")[0] || global.namebot}`.info);
-            let currentTime = moment.tz("Asia/Makassar")
-    const infoMsg = `🤖 *Bot Info* 🤖\n🕰️ *Current Time:* ${currentTime.format('HH:mm:ss')}\n👤 *Name:* *${name || 'Taylor'}*\n🏷️ *Tag:* *@${jid.split('@')[0]}*\n⚡ *Ping Speed:* *${formattedPingSpeed}*\n📅 *Date:* ${currentTime.format('YYYY-MM-DD')}\n🕒 *Time:* ${currentTime.format('HH:mm:ss')}\n📆 *Day:* ${currentTime.format('dddd')}\n📝 *Description:* Bot *${name || 'Taylor'}* is now active.`;
+    const infoMsg = `🤖 *Bot Info* 🤖\n🕰️ *Current Time:* ${currentTime.format('HH:mm:ss')}\n👤 *Name:* *${name || 'Taylor'}*\n🏷️ *Tag:* *@${jid.split('@')[0]}*\n⚡ *Ping Speed:* *${formattedPingSpeed}*\n📅 *Date:* ${currentTime.format('YYYY-MM-DD')}\n🕒 *Time:* ${currentTime.format('HH:mm:ss')}\n📆 *Day:* ${currentTime.format('dddd')}\n📝 *Description:* Bot *${name || 'Taylor-V'}* is now active.`;
             const messg = await conn.sendMessage(`${nomorown}@s.whatsapp.net`, {
                 text: infoMsg,
                 mentions: [nomorown + '@s.whatsapp.net', jid]
