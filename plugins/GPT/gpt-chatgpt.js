@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import cheerio from "cheerio";
 
-let handler = async (m, {
+const handler = async (m, {
     conn,
     args,
     usedPrefix,
@@ -12,29 +12,19 @@ let handler = async (m, {
     if (!text) return m.reply(`Masukkan teks atau reply pesan dengan teks yang ingin diolah.\nContoh penggunaan:\n*${usedPrefix}${command} Hai, apa kabar?*`);
 
     try {
-        const messages = [{
-                role: "system",
-                content: "Anda adalah asisten yang membantu."
-            },
-            {
-                role: "user",
-                content: text
-            }
-        ];
-
-        const output = await ChatGpt(messages[0].content, messages[1].content);
-        await m.reply(output)
+        const res = await ChatGpt(text);
+        await m.reply(res)
     } catch (e) {
         try {
-            let res = await bardaifree(text)
+            const res = await bardaifree(text)
             await m.reply(res)
         } catch (e) {
             try {
-                let res = await chatgptss(text)
+                const res = await chatgptss(text)
                 await m.reply(res)
             } catch (e) {
                 try {
-                    let res = await bartai(text)
+                    const res = await bartai(text)
                     await m.reply(res)
                 } catch (e) {
                     await m.reply(eror)
@@ -111,31 +101,9 @@ async function bartai(message) {
     }
 }
 
-async function ChatGpt(system, prompt) {
+async function ChatGpt(prompt) {
     try {
-        const host = "47.116.100.195";
-        const port = "188";
-
-        const requestOptions = {
-            method: 'POST',
-            headers: {
-                'Host': host,
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
-                'Accept': 'application/json, text/plain, */*',
-                'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7',
-                'Content-Type': 'application/json',
-                'Origin': 'http://47.116.100.195'
-            },
-            body: JSON.stringify({
-                prompt,
-                network: true,
-                system,
-                withoutContext: false,
-                stream: false
-            })
-        };
-
-        const response = await fetch(`http://${host}:${port}/api/generateStream`, requestOptions);
+        const response = await fetch(`https://api.freegpt4.ddns.net/?text=${prompt}`);
         const data = await response.text();
         return data;
     } catch (error) {
