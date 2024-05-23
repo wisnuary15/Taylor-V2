@@ -2,7 +2,8 @@ import {
     OTP
 } from "../../lib/welcome.js";
 import {
-    generate
+    generate,
+    generateV2
 } from "../../lib/tools/captcha.js";
 import {
     promises as fsPromises
@@ -57,7 +58,7 @@ Terima kasih telah melakukan verifikasi. Data pengguna telah disimpan dengan ama
 🚀 Sekarang kamu dapat menggunakan fitur-fitur khusus yang hanya tersedia untuk pengguna terverifikasi.
 `;
 
-        const json = await createOtpCanvas();
+        const json = await createOtpCanvas(flaaa.getRandom()+"Sukses");
         let confirm = "💡 Reply pesan ini dengan mengetik kode OTP yang ada pada gambar!";
         let txt = `📝 *Registrasi* 📝\n\n@${m.sender.split('@')[0]}\n${confirm}\n\n_( Berlaku 1X )_`;
         let msg = await conn.sendMessage(m.chat, {
@@ -102,19 +103,18 @@ function isNumber(x) {
     return !isNaN(x);
 }
 
-async function createOtpCanvas() {
+async function createOtpCanvas(inSucc) {
 try {
-    const otp = {};
-    const captcha = await generate(otp);
+    const captcha = await generate(6) || await generateV2({});
     const captchaBuffer = captcha.buffer
 
-    const secur = OTP("Success");
+    const secur = OTP(inSucc);
     const res2 = await fetch(secur);
     const securityBuffer = Buffer.from(await res2.arrayBuffer());
 
     return {
         image: captchaBuffer,
-        otp: captcha.token,
+        otp: captcha.code,
         verified: securityBuffer
     };
     } catch (e) {
@@ -124,7 +124,7 @@ try {
     const res = await fetch(captcha);
     const captchaBuffer = Buffer.from(await res.arrayBuffer());
 
-    const secur = OTP("Success");
+    const secur = OTP(inSucc);
     const res2 = await fetch(secur);
     const securityBuffer = Buffer.from(await res2.arrayBuffer());
 
