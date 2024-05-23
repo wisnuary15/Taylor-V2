@@ -2,6 +2,9 @@ import {
     OTP
 } from "../../lib/welcome.js";
 import {
+    generate
+} from "../../lib/tools/captcha.js";
+import {
     promises as fsPromises
 } from 'fs';
 import {
@@ -100,6 +103,22 @@ function isNumber(x) {
 }
 
 async function createOtpCanvas() {
+try {
+    const otp = {};
+    const captcha = await generate(otp);
+    const captchaBuffer = captcha.buffer
+
+    const secur = OTP("Success");
+    const res2 = await fetch(secur);
+    const securityBuffer = Buffer.from(await res2.arrayBuffer());
+
+    return {
+        image: captchaBuffer,
+        otp: captcha.token,
+        verified: securityBuffer
+    };
+    } catch (e) {
+    try {
     const otp = randomBytes(4).toString('hex').slice(0, 4);
     const captcha = OTP(otp);
     const res = await fetch(captcha);
@@ -114,4 +133,7 @@ async function createOtpCanvas() {
         otp: otp,
         verified: securityBuffer
     };
+    } catch (e) {
+    console.error(e);
+    }
 }
