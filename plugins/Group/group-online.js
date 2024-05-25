@@ -23,14 +23,7 @@ let handler = async (m, {
 
 handler.help = ['listonline'];
 handler.tags = ['group'];
-handler.command = /^(liston(line)?)/i;
-handler.owner = false;
-handler.mods = false;
-handler.premium = false;
+handler.command = /^(here|list)(online)?$/i;
 handler.group = true;
-handler.private = false;
-handler.admin = false;
-handler.botAdmin = false;
-handler.fail = null;
 
 export default handler;
