@@ -2,31 +2,37 @@ import fs from 'fs'
 import fetch from 'node-fetch'
 import FormData from 'form-data'
 
-let handler = async (m) => {
-    let q = m.quoted ? m.quoted : m
-    let mime = q.mediaType || ''
-    if (/image|video|audio|sticker|document/.test(mime)) {
-        let media = await q.download(true)
-        let data = await uploadFile(media)
-        m.reply(data.files[0].url)
-    } else throw 'No media found'
-}
-handler.help = ['tourl2']
-// handler.tags = ['tools']
-handler.command = /^(tourl2)$/i
+const handler = async (m) => {
+    try {
+        const q = m.quoted || m
+        const mime = q.mediaType || ''
+        if (!/image|video|audio|sticker|document/.test(mime)) throw 'No media found'
 
+        const media = await q.download(true)
+        const { files } = await uploadFile(media)
+        await m.reply(files[0].url)
+    } catch (e) {
+        await m.reply(`Error: ${e}`)
+    }
+}
+
+handler.help = ['tourl2']
+handler.command = /^(tourl2)$/i
 export default handler
 
-async function uploadFile(path) {
-    let form = new FormData()
-    form.append('files[]', fs.createReadStream(path))
-    let res = await (await fetch('https://uguu.se/upload.php', {
-        method: 'post',
-        headers: {
-            ...form.getHeaders()
-        },
-        body: form
-    })).json()
-    await fs.promises.unlink(path)
-    return res
+const uploadFile = async (path) => {
+    try {
+        const form = new FormData()
+        form.append('files[]', fs.createReadStream(path))
+        const res = await fetch('https://uguu.se/upload.php', {
+            method: 'POST',
+            headers: form.getHeaders(),
+            body: form
+        })
+        const json = await res.json()
+        await fs.promises.unlink(path)
+        return json
+    } catch (e) {
+        throw 'Upload failed'
+    }
 }
