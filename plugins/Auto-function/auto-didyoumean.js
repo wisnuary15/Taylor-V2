@@ -19,55 +19,46 @@ export async function before(m, { match }) {
             rating: similarity(noPrefix, target)
         })).filter(({ rating }) => rating > 0.70);
 
-        const groupedMatches = {};
-        filteredMatches.forEach(item => {
-            const score = (item.rating * 100).toFixed(0);
-            if (!groupedMatches[score]) groupedMatches[score] = [];
-            if (groupedMatches[score].length < 5) groupedMatches[score].push(item.target);
-        });
+        if (filteredMatches.length === 0) return;
 
-        const groupedResults = Object.entries(groupedMatches).sort((a, b) => parseInt(b[0]) - parseInt(a[0]));
+        const sortedMatches = filteredMatches.sort((a, b) => b.rating - a.rating);
 
-        const [bestScore, bestTargets] = groupedResults[0] || [0, []];
-        const bestMatches = bestTargets.sort().map(target => ({
-            header: `Similarity: ${bestScore}%`,
-            id: `${usedPrefix}${target}`,
-            title: target,
+        const bestMatch = sortedMatches[0];
+        const otherMatches = sortedMatches.length > 1 ? sortedMatches.slice(1) : [];
+
+        const bestMatchEntry = {
+            header: `Similarity: ${(bestMatch.rating * 100).toFixed(0)}%`,
+            id: `${usedPrefix}${bestMatch.target}`,
+            title: bestMatch.target,
+            description: ""
+        };
+
+        const otherMatchEntries = otherMatches.map(item => ({
+            header: `Similarity: ${(item.rating * 100).toFixed(0)}%`,
+            id: `${usedPrefix}${item.target}`,
+            title: item.target,
             description: ""
         }));
 
-        const allMatches = groupedResults.slice(1).flatMap(([score, targets]) => 
-            targets.sort().map(target => ({
-                header: `Similarity: ${score}%`,
-                id: `${usedPrefix}${target}`,
-                title: target,
-                description: ""
-            }))
-        );
-
-        if (bestMatches.length === 0 && allMatches.length === 0) return;
-
-        const rows = bestMatches.length === 1 ? [{
-            title: "Best Match",
-            highlight_label: "Best match",
-            rows: bestMatches
-        }] : [{
-            title: "Best Matches",
-            highlight_label: "Best match",
-            rows: bestMatches
-        }, {
-            title: "All Matches",
-            highlight_label: "Other matches",
-            rows: allMatches
-        }];
+        const rows = [
+            {
+                title: "Best Match",
+                highlight_label: "Best match",
+                rows: [bestMatchEntry]
+            },
+            ...(otherMatchEntries.length > 0 ? [{
+                title: "Other Matches",
+                highlight_label: "Other matches",
+                rows: otherMatchEntries
+            }] : [])
+        ];
 
         const mentionedJid = m?.mentionedJid?.[0] || (m?.fromMe ? this.user.jid : m?.sender || m?.key.remoteJid);
         const senderName = (m?.name || m?.pushName || m?.sender || "").split('\n')[0];
         const shouldSendMessage = (
-            Object.keys(groupedMatches).length > 0 && 
-            !filteredMatches.some(({ target }) => target === noPrefix) && 
-            !m?.isCommand && 
-            !help.includes(noPrefix) && 
+            !filteredMatches.some(({ target }) => target === noPrefix) &&
+            !m?.isCommand &&
+            !help.includes(noPrefix) &&
             !['=>', '>', '$'].some(char => (m?.text || m?.caption).startsWith(char))
         );
 
