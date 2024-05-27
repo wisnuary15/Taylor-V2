@@ -28,7 +28,6 @@ let handler = async (m, {
         let mythic = pickRandom([1, 0, 0, 1]);
         let legendary = pickRandom([1, 0, 0, 0]);
         let sampah = Math.floor(Math.random() * 300);
-        let legendary = Math.floor(Math.random() * 10);
         let kayu = Math.floor(Math.random() * 150);
         let batu = Math.floor(Math.random() * 100);
         let iron = Math.floor(Math.random() * 100);
