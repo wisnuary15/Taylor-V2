@@ -1,18 +1,6 @@
 import fetch from "node-fetch"
-import {
-    addExif
-} from "../../lib/sticker.js"
-import {
-    Sticker,
-    StickerTypes
-} from "wa-sticker-formatter"
-import {
-    sticker
-} from "../../lib/sticker.js"
-import {
-    imageToWebp,
-    videoToWebp
-} from "../../lib/converter.js"
+import { Sticker } from 'wa-sticker-formatter'
+import { sticker, addExif, video2webp, video2webp30, video2webp45, video2webp60 } from '../../lib/sticker.js'
 import {
     emojiGraph,
     searchEmoji,
@@ -31,12 +19,13 @@ let handler = async (m, {
         let [packnames, ...authors] = args.join(" ").split("|")
         authors = (authors || []).join("|")
         let q = m.quoted ? m.quoted : m
+        
         let mime = q.mtype || ""
         await m.reply(wait)
         if (/stickerMessage/g.test(mime)) {
             let img = await q.download?.()
             try {
-                stiker = await addExif(img, packnames || packname, authors || m.name)
+                stiker = await _createSticker(img, false, packnames || packname, authors || m.name, 30)
             } catch (e) {
                 try {
                     stiker = await sticker(img, false, packnames || packname, authors || m.name)
@@ -47,42 +36,34 @@ let handler = async (m, {
         } else if (/imageMessage/g.test(mime)) {
             let img = await q.download?.()
             try {
-                stiker = await createSticker(img, false, packnames || packname, authors || m.name)
+                stiker = await _createSticker(img, false, packnames || packname, authors || m.name, 30)
             } catch (e) {
                 try {
                     stiker = await sticker(img, false, packnames || packname, authors || m.name)
                 } catch (e) {
-                    try {
-                        stiker = await imageToWebp(img)
-                    } catch (e) {
-                        throw "Failed"
-                    }
+                    throw "Failed"
                 }
             }
         } else if (/videoMessage/g.test(mime)) {
-            if ((q.msg || q).seconds > 11) return m.reply("Maksimal video durasi 10 detik!")
-            let img = await q.download?.()
+            if ((q.msg || q).seconds > 11) return m.reply('Maksimal 10 detik!')
+			let img = await q.download?.()
             try {
-                stiker = await mp4ToWebp(img, {
-                    pack: packnames || packname,
-                    authors: authors || m.name
-                })
+                stiker = await sticker(img, false, packnames || packname, authors || m.name)
             } catch (e) {
                 try {
-                    stiker = await videoToWebp(img)
+                    stiker = await video2webp(img) || await video2webp30(img) || await video2webp45(img) || await video2webp60(img)
                 } catch (e) {
                     try {
-                        stiker = await sticker(img, false, packnames || packname, authors || m.name)
-                    } catch (e) {
-                        throw "Failed"
-                    }
+                    stiker = await _createSticker(img, false, packnames || packname, authors || m.name, 30)
+                } catch (e) {
+                    throw "Failed"
+                }
                 }
             }
         } else if (/documentMessage/g.test(mime)) {
             let img = await q.download?.()
-
             try {
-                stiker = await createSticker(img, false, packnames || packname, authors || m.name, 30)
+                stiker = await _createSticker(img, false, packnames || packname, authors || m.name, 30)
             } catch (e) {
                 try {
                     stiker = await sticker(img, false, packnames || packname, authors || m.name)
@@ -91,22 +72,22 @@ let handler = async (m, {
                 }
             }
         } else if (/viewOnceMessageV2/g.test(mime)) {
-            let img = await q.download?.()
+             let img = await q.download?.()
             try {
-                stiker = await sticker(img, false, packnames || packname, authors || m.name)
+                stiker = await _createSticker(img, false, packnames || packname, authors || m.name, 30)
             } catch (e) {
                 try {
-                    stiker = await createSticker(img, false, packnames || packname, authors || m.name, 30)
+                    stiker = await sticker(img, false, packnames || packname, authors || m.name)
                 } catch (e) {
                     throw "Failed"
                 }
             }
         } else if (args[0] && isUrl(args[0])) {
             try {
-                stiker = await sticker(false, args[0], packnames || packname, authors || m.name)
+                stiker = await _createSticker(false, args[0], packnames || packname, authors || m.name, 30)
             } catch (e) {
                 try {
-                    stiker = await createSticker(false, args[0], packnames || packname, authors || m.name, 30)
+                    stiker = await sticker(false, args[0], packnames || packname, authors || m.name)
                 } catch (e) {
                     throw "Failed"
                 }
@@ -129,7 +110,7 @@ let handler = async (m, {
                     }
                 }
                 try {
-                    stiker = await createSticker(false, emj, packnames || packname, authors || m.name, 30)
+                    stiker = await _createSticker(false, emj, packnames || packname, authors || m.name, 30)
                 } catch (e) {
                     try {
                         stiker = await sticker(false, emj, packnames || packname, authors || m.name)
@@ -160,7 +141,7 @@ function getUrlByName(data, query) {
 
 const isUrl = (text) => text.match(new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)(jpe?g|gif|png)/, 'gi'))
 
-async function createSticker(img, url, packName, authorName, quality) {
+async function _createSticker(img, url, packName, authorName, quality = 30) {
     try {
         let stickerMetadata = {
             type: 'full',
