@@ -1,23 +1,10 @@
-import {
-    StableHorde,
-    AiHorde
-} from '../../lib/maker/stablehorde.js';
+import { StableHorde, AiHorde } from '../../lib/maker/stablehorde.js';
 
 const apiKey = "0000000000";
-const stableHorde = new StableHorde({
-    apiKey
-});
-const aiHorde = new AiHorde({
-    apiKey
-});
+const stableHorde = new StableHorde({ apiKey });
+const aiHorde = new AiHorde({ apiKey });
 
-let handler = async (m, {
-    command,
-    usedPrefix,
-    conn,
-    text,
-    args
-}) => {
+let handler = async (m, { command, usedPrefix, conn, text, args }) => {
     const input_data = ["text", "image"];
     let [urutan, tema, queer] = text.split("|");
     urutan = parseInt(urutan);
@@ -33,62 +20,62 @@ let handler = async (m, {
 
     switch (out) {
         case "text":
-            const textModels = await stableHorde.textModels() || await aiHorde.textModels();
+            let textModels = await (stableHorde.textModels() || aiHorde.textModels());
             if (isNaN(tema) || tema < 1 || tema > textModels.length) {
                 const validTemaList = textModels.map((item, index) => `${index + 1}. ${item}`).join('\n');
                 return m.reply(`Nomor yang Anda masukkan tidak valid. Harap pilih nomor antara 1 dan ${textModels.length}:\n${validTemaList}`);
             }
-            const modelText = textModels[tema - 1];
-            const dataInput = {
-    prompt: queer,
-    model: modelText,
-    max_context_length: 2048,
-                        max_length: 512,
-                        singleline: false,
-                        temperature: 0.7,
-                        top_p: 0.2,
-                        top_k: 85,
-                        top_a: 0,
-                        typical: 1,
-                        tfs: 1,
-                        rep_pen: 1.1,
-                        rep_pen_range: 1024,
-                        rep_pen_slope: 0.7,
-                        sampler_order: [6, 0, 1, 3, 4, 2, 5],
-};
+            let modelText = textModels[tema - 1];
+            let dataInputText = {
+                prompt: queer,
+                model: modelText,
+                max_context_length: 2048,
+                max_length: 512,
+                singleline: false,
+                temperature: 0.7,
+                top_p: 0.2,
+                top_k: 85,
+                top_a: 0,
+                typical: 1,
+                tfs: 1,
+                rep_pen: 1.1,
+                rep_pen_range: 1024,
+                rep_pen_slope: 0.7,
+                sampler_order: [6, 0, 1, 3, 4, 2, 5],
+            };
             try {
-                const generatedText = await stableHorde.generateText(dataInput) || await aiHorde.generateText(dataInput);
+                const generatedText = await (stableHorde.generateText(dataInputText) || aiHorde.generateText(dataInputText));
                 await m.reply(generatedText.generations[0].text);
             } catch (e) {
                 return m.reply("Terjadi kesalahan saat menghasilkan teks.");
             }
             break;
         case "image":
-            const imageModels = await stableHorde.imageModels() || await aiHorde.imageModels();
-            const sortedNames = imageModels.sort((a, b) => b.performance - a.performance).map(item => item.name);
+            let imageModels = await (stableHorde.imageModels() || aiHorde.imageModels());
+            let sortedNames = imageModels.sort((a, b) => b.performance - a.performance).map(item => item.name);
             if (isNaN(tema) || tema < 1 || tema > sortedNames.length) {
                 const validTemaList = sortedNames.map((item, index) => `${index + 1}. ${item}`).join('\n');
                 return m.reply(`Nomor yang Anda masukkan tidak valid. Harap pilih nomor antara 1 dan ${sortedNames.length}:\n${validTemaList}`);
             }
-            const modelImage = sortedNames[tema - 1];
-            const dataInput = {
-    prompt: queer,
-    negativePrompt: "",
-    seed: "random",
-    height: 1024,
-    width: 1024,
-    karras: true,
-    tiling: false,
-    hiResFix: false,
-    clipSkip: "0",
-    sampler_name: "k_dpmpp_sde",
-    steps: 8,
-    nsfw: false,
-    trustedWorkers: true,
-    model: modelImage
-};
+            let modelImage = sortedNames[tema - 1];
+            let dataInputImage = {
+                prompt: queer,
+                negativePrompt: "",
+                seed: "random",
+                height: 1024,
+                width: 1024,
+                karras: true,
+                tiling: false,
+                hiResFix: false,
+                clipSkip: "0",
+                sampler_name: "k_dpmpp_sde",
+                steps: 8,
+                nsfw: false,
+                trustedWorkers: true,
+                model: modelImage
+            };
             try {
-                const generatedImageURL = await stableHorde.generateImage(dataInput) || await aiHorde.generateImage(dataInput);
+                const generatedImageURL = await (stableHorde.generateImage(dataInputImage) || aiHorde.generateImage(dataInputImage));
                 await conn.sendFile(m.chat, generatedImageURL.generations[0].img, '', '', m);
             } catch (e) {
                 return m.reply("Terjadi kesalahan saat menghasilkan gambar.");
