@@ -1,27 +1,12 @@
-import {
-    OTP
-} from "../../lib/welcome.js";
-import {
-    generate,
-    generateV2
-} from "../../lib/tools/captcha.js";
-import {
-    promises as fsPromises
-} from 'fs';
-import {
-    createHash,
-    randomBytes
-} from "crypto";
+import { OTP } from "../../lib/welcome.js";
+import { generate, generateV2 } from "../../lib/tools/captcha.js";
+import { promises as fsPromises } from 'fs';
+import { createHash, randomBytes } from "crypto";
 import fetch from "node-fetch";
 
 let Reg = /\|?(.*)([^\w\s])([0-9]*)$/i;
 
-let handler = async (m, {
-    conn,
-    usedPrefix,
-    command,
-    text
-}) => {
+let handler = async (m, { conn, usedPrefix, command, text }) => {
     conn.registrasi = conn.registrasi || {};
     if (conn.registrasi[m.chat]) return conn.reply(m.chat, 'Anda masih berada dalam sesi Registrasi', conn.registrasi[m.chat].msg);
 
@@ -84,8 +69,8 @@ Terima kasih telah melakukan verifikasi. Data pengguna telah disimpan dengan ama
             }, 60 * 1000)
         };
     } catch (e) {
-        console.log(e);
-        await m.reply(eror);
+        console.error(e);
+        await m.reply(e);
     }
 };
 
@@ -95,45 +80,38 @@ handler.command = /^(register|verify|daftar|reg(is)?|verif)$/i;
 
 export default handler;
 
-function pickRandom(list) {
-    return list[Math.floor(Math.random() * list.length)];
-}
-
-function isNumber(x) {
-    return !isNaN(x);
-}
-
 async function createOtpCanvas(inSucc) {
-try {
-    const captcha = await generate(6) || await generateV2({});
-    const captchaBuffer = captcha.buffer
-
-    const secur = OTP(inSucc);
-    const res2 = await fetch(secur);
-    const securityBuffer = Buffer.from(await res2.arrayBuffer());
-
-    return {
-        image: captchaBuffer,
-        otp: captcha.code,
-        verified: securityBuffer
-    };
-    } catch (e) {
     try {
-    const otp = randomBytes(4).toString('hex').slice(0, 4);
-    const captcha = OTP(otp);
-    const res = await fetch(captcha);
-    const captchaBuffer = Buffer.from(await res.arrayBuffer());
+        const captcha = await generate(6) || await generateV2({});
+        const captchaBuffer = captcha.buffer
 
-    const secur = OTP(inSucc);
-    const res2 = await fetch(secur);
-    const securityBuffer = Buffer.from(await res2.arrayBuffer());
+        const secur = OTP(inSucc);
+        const res2 = await fetch(secur);
+        const securityBuffer = Buffer.from(await res2.arrayBuffer());
 
-    return {
-        image: captchaBuffer,
-        otp: otp,
-        verified: securityBuffer
-    };
+        return {
+            image: captchaBuffer,
+            otp: captcha.code,
+            verified: securityBuffer
+        };
     } catch (e) {
-    console.error(e);
+        try {
+            const otp = randomBytes(4).toString('hex').slice(0, 4);
+            const captcha = OTP(otp);
+            const res = await fetch(captcha);
+            const captchaBuffer = Buffer.from(await res.arrayBuffer());
+
+            const secur = OTP(inSucc);
+            const res2 = await fetch(secur);
+            const securityBuffer = Buffer.from(await res2.arrayBuffer());
+
+            return {
+                image: captchaBuffer,
+                otp: otp,
+                verified: securityBuffer
+            };
+        } catch (e) {
+            console.error(e);
+        }
     }
 }
