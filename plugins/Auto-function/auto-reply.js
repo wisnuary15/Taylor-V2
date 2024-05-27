@@ -1,48 +1,30 @@
 export async function before(m) {
-    const {
-        mtype,
-        text,
-        isBaileys,
-        sender,
-        chat
-    } = m;
     const who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? this.user.jid : m.sender;
     const name = who.split("@")[0]
     const chat = global.db.data.chats[m.chat];
-    const {
-        banned
-    } = global.db.data.users[sender];
-    if (!sender || !chat) return false
+    const { banned } = global.db.data.users[m.sender];
+    if (!m.sender || !chat) return false
 
-    if (chat.autoReply && !isBaileys) {
-        if (mtype === 'groupInviteMessage' || text.startsWith('https://chat') || text.startsWith('Buka tautan ini')) {
-            this.reply(m.chat, `✨ *Undang Bot ke Grup* ✨\n💎 7 Hari / Rp 5,000\n💎 30 Hari / Rp 15,000`, m, {
-                mentions: [sender]
-            });
-            await this.reply(sender + '@s.whatsapp.net', `Ada yang mau nyulik nih :v \n\nDari: @${sender.split("@")[0]} \n\nPesan: ${text}`, m, {
-                mentions: [sender]
-            });
+    if (chat.autoReply && !m.isBaileys) {
+        if (m.mtype === 'groupInviteMessage' || m.text.startsWith('https://chat') || m.text.startsWith('Buka tautan ini')) {
+            await this.reply(m.chat, `✨ *Undang Bot ke Grup* ✨\n💎 7 Hari / Rp 5,000\n💎 30 Hari / Rp 15,000`, m, { mentions: [m.sender] });
+            await this.reply(m.sender + '@s.whatsapp.net', `Ada yang mau nyulik nih :v \n\nDari: @${m.sender.split("@")[0]} \n\nPesan: ${m.text}`, m, { mentions: [m.sender] });
         }
 
         let reactCaption = '';
-        if (mtype === 'reactionMessage') {
+        if (m.mtype === 'reactionMessage') {
             const action = m.text ? 'Mengirim' : 'Menghapus';
             const message = m.text ? `Reaction: ${m.text}` : 'Reaction';
             reactCaption = `🎭 *Terdeteksi* @${name} ${action} ${message}`;
         }
 
-        if (mtype === 'editedMessage') {
+        if (m.mtype === 'editedMessage') {
             try {
-                console.log(mtype);
+                console.log(m.mtype);
                 const tittle_edit = `*Edited Message* @${m.sender.split('@')[0]}`
-                const message_edit = this.loadMessage(m.id).message.editedMessage.message.protocolMessage.editedMessage.extendedTextMessage.text
-                const quoted_edit = this.loadMessage(this.loadMessage(m.id).message.editedMessage.message.protocolMessage.key.id)
-                return this.sendMessage(m.chat, {
-                    text: `${tittle_edit}\n\n${message_edit}`,
-                    mentions: [m.sender]
-                }, {
-                    quoted: quoted_edit
-                });
+                const message_edit = m.message.editedMessage.message.protocolMessage.editedMessage.extendedTextMessage.text
+                const quoted_edit = this.loadMessage(m.message.editedMessage.message.protocolMessage.key.id)
+                return this.sendMessage(m.chat, { text: `${tittle_edit}\n\n${message_edit}`, mentions: [m.sender] }, { quoted: quoted_edit });
             } catch (e) {
                 console.log(e);
             }
@@ -57,31 +39,22 @@ export async function before(m) {
             contactMessage: `📞 *Terdeteksi* @${name} Lagi Promosi Kontak`,
         };
 
-        if (mtype in messages) {
-            const caption = messages[mtype];
+        if (m.mtype in messages) {
+            const caption = messages[m.mtype];
             const mentions = await this.parseMention(caption);
-            await this.reply(m.chat, caption, m, {
-                mentions
-            });
+            await this.reply(m.chat, caption, m, { mentions });
         }
 
         const triggerWords = ['aktif', 'wey', 'we', 'hai', 'oi', 'oy', 'p', 'bot'];
-        const lowerText = text.toLowerCase();
-        if (triggerWords.some(word => lowerText === word)) { // Check if m.text exactly matches any word in the triggerWords array
+        const lowerText = m.text.toLowerCase();
+        if (triggerWords.some(word => lowerText === word)) {
             const apsih = ["Kenapa", "Ada apa", "Naon meng", "Iya, bot disini", "Luwak white coffee passwordnya", "Hmmm, kenapa", "Apasih", "Okey bot sudah aktif", "2, 3 tutup botol", "Bot aktif"];
             const caption = `🤖 *${apsih[Math.floor(Math.random() * apsih.length)]}* kak @${name} 🗿`;
-            await this.reply(m.chat, caption, m, {
-                mentions: [who]
-            });
+            await this.reply(m.chat, caption, m, { mentions: [who] });
         }
 
-        if (mtype === 'stickerMessage' || text.includes('🗿')) {
-            this.sendMessage(m.chat, {
-                react: {
-                    text: '🗿',
-                    key: m.key
-                }
-            });
+        if (m.mtype === 'stickerMessage' || m.text.includes('🗿')) {
+            await this.sendMessage(m.chat, { react: { text: '🗿', key: m.key } });
         }
 
     }
