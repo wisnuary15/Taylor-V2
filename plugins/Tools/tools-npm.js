@@ -1,15 +1,12 @@
 import fetch from 'node-fetch';
 
-const handler = async (m, {
-    command,
-    text
-}) => {
+const handler = async (m, { command, text }) => {
     try {
         const urls = {
             npmjs: `https://registry.npmjs.org/-/v1/search?text=${text}`,
             cdnjs: `https://api.cdnjs.com/libraries/${text}`,
-            jsdelivr: `https://registry.jsdelivr.net/v1/search?query=${text}`,
-            unpkg: `https://unpkg.com/${text}/?meta`,
+            jsdelivr: `https://api.jsdelivr.com/v1/jsdelivr/libraries/${text}`,
+            unpkg: `https://api.jsdelivr.com/v1/unpkg/package/${text}`,
             jsdelivrcdn: `https://cdn.jsdelivr.net/npm/${text}`,
             cloudflare: `https://api.cdnjs.com/libraries/${text}`,
             rawgit: `https://api.github.com/repos/${text}/releases`,
@@ -21,77 +18,52 @@ const handler = async (m, {
         };
 
         const url = urls[command];
-
         if (!url) return m.reply('Perintah tidak dikenali.');
 
         const res = await fetch(url);
         const data = await res.json();
 
-        let txt;
+        const txt = (() => {
+            switch (command) {
+                case 'npmjs':
+                    const responseData = data.objects;
+                    return responseData.length ? responseData.map(({ package: pkg }) => `📦 *${pkg.name}* (v${pkg.version})\n[🔗 npm](${pkg.links.npm})\n${pkg.description}`).join('\n\n') : `Query "${text}" tidak ditemukan :/`;
 
-        switch (command) {
-            case 'npmjs':
-                const responseData = data.objects;
-                if (!responseData.length) return m.reply(`Query "${text}" tidak ditemukan :/`);
+                case 'cdnjs':
+                    return `📦 *Name:* ${data.name}\n*Latest:* ${data.version}\n\n*Description:* ${data.description}\n*Homepage:* ${data.homepage}`;
 
-                txt = responseData.map(({
-                    package: pkg
-                }) => (
-                    `📦 *${pkg.name}* (v${pkg.version})\n[🔗 npm](${pkg.links.npm})\n${pkg.description}`
-                )).join('\n\n');
-                break;
+                case 'jsdelivr':
+                    return data.versions.map(pkg => `📦 *Name:* ${pkg.name}\n*Version:* ${pkg.version}\n*Description:* ${pkg.description}\n*Homepage:* ${pkg.homepage}`).join('\n\n');
 
-            case 'cdnjs':
-                txt = `📦 *Name:* ${data.name}\n*Latest:* ${data.version}\n\n*Description:* ${data.description}\n*Homepage:* ${data.homepage}`;
-                break;
+                case 'unpkg':
+                    return `📦 *Package:* ${data.name}\n*Version:* ${data.version}\n*Description:* ${data.description}\n*Homepage:* ${data.homepage}`;
 
-            case 'jsdelivr':
-                txt = data.results.map((pkg) => (
-                    `📦 *Name:* ${pkg.package.name}\n*Version:* ${pkg.package.version}\n*Description:* ${pkg.package.description}\n*Homepage:* ${pkg.package.links.homepage}`
-                )).join('\n\n');
-                break;
+                case 'jsdelivrcdn':
+                    return `📦 *CDN:* ${data.name}\n*URL:* ${data.latest}`;
 
-            case 'unpkg':
-                txt = `📦 *Package:* ${data.name}\n*Version:* ${data.version}\n*Description:* ${data.description}\n*Homepage:* ${data.homepage}`;
-                break;
+                case 'cloudflare':
+                    return `📦 *Library:* ${data.name}\n*Version:* ${data.version}\n*Homepage:* ${data.homepage}`;
 
-            case 'jsdelivrcdn':
-                txt = `📦 *CDN:* ${data.name}\n*URL:* ${data.latest}`;
-                break;
+                case 'rawgit':
+                    return data.map(release => `📦 *Version:* ${release.tag_name}\n[🔗 Release](${release.html_url})`).join('\n\n');
 
-            case 'cloudflare':
-                txt = `📦 *Library:* ${data.name}\n*Version:* ${data.version}\n*Homepage:* ${data.homepage}`;
-                break;
+                case 'bootstrapcdn':
+                    return `📦 *Library:* ${data.name}\n*Version:* ${data.version}\n*Description:* ${data.description}`;
 
-            case 'rawgit':
-                txt = data.map((release) => (
-                    `📦 *Version:* ${release.tag_name}\n[🔗 Release](${release.html_url})`
-                )).join('\n\n');
-                break;
+                case 'googleapis':
+                case 'jquerycdn':
+                    return `📦 *Library:* ${data.name}\n*Version:* ${data.version}\n*URL:* ${data.latest}`;
 
-            case 'bootstrapcdn':
-                txt = `📦 *Library:* ${data.name}\n*Version:* ${data.version}\n*Description:* ${data.description}`;
-                break;
+                case 'fontawesome':
+                    return data.versions.map(pkg => `📦 *Name:* ${pkg.name}\n*Version:* ${pkg.version}\n*Homepage:* ${pkg.homepage}`).join('\n\n');
 
-            case 'googleapis':
-            case 'jquerycdn':
-                txt = `📦 *Library:* ${data.name}\n*Version:* ${data.version}\n*URL:* ${data.latest}`;
-                break;
+                case 'fontcdn':
+                    return `📦 *Font:* ${data.family}\n*URL:* ${url}`;
 
-            case 'fontawesome':
-                txt = data.versions.map((pkg) => (
-                    `📦 *Name:* ${pkg.name}\n*Version:* ${pkg.version}\n*Homepage:* ${pkg.homepage}`
-                )).join('\n\n');
-                break;
-
-            case 'fontcdn':
-                txt = `📦 *Font:* ${data.family}\n*URL:* ${url}`;
-                break;
-
-            default:
-                txt = `Perintah "${command}" belum diimplementasikan.`;
-                break;
-        }
+                default:
+                    return 'Perintah belum diimplementasikan.';
+            }
+        })();
 
         m.reply(txt);
     } catch (error) {

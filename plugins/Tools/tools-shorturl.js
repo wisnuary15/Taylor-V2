@@ -1,64 +1,54 @@
-import {
-    ShortLink
-} from "../../lib/tools/shortlink.js";
+import { ShortLink } from "../../lib/tools/shortlink.js";
 const short = new ShortLink();
 
-let handler = async (m, {
-    command,
-    usedPrefix,
-    conn,
-    args,
-    text
-}) => {
-    const asyncFunctions = {
-        adfoc: short.adfoc,
-        bitly: short.bitly,
-        cleanuri: short.cleanuri,
-        cuttly: short.cuttly,
-        dxyz: short.dxyz,
-        gotiny: short.gotiny,
-        isgd: short.isgd,
-        kutt: short.kutt,
-        linkpoi: short.linkpoi,
-        multishort: short.multishort,
-        onept: short.onept,
-        ouo: short.ouo,
-        rebrandly: short.rebrandly,
-        shorte: short.shorte,
-        shorturl: short.shorturl,
-        shrtco: short.shrtco,
-        tinyurl: short.tinyurl,
-        tnyim: short.tnyim,
-        vgd: short.vgd,
-        vurl: short.vurl,
-        ssur: short.ssur,
-        adfly: short.adfly,
-    };
+const asyncFunctions = {
+    adfoc: { func: short.adfoc, desc: 'AdFoc.us' },
+    bitly: { func: short.bitly, desc: 'Bitly' },
+    cleanuri: { func: short.cleanuri, desc: 'CleanURI' },
+    cuttly: { func: short.cuttly, desc: 'Cutt.ly' },
+    dxyz: { func: short.dxyz, desc: 'Dxyz' },
+    gotiny: { func: short.gotiny, desc: 'GoTiny.cc' },
+    isgd: { func: short.isgd, desc: 'Is.gd' },
+    kutt: { func: short.kutt, desc: 'Kutt.it' },
+    linkpoi: { func: short.linkpoi, desc: 'Linkpoi.in' },
+    multishort: { func: short.multishort, desc: 'MultiShort.net' },
+    onept: { func: short.onept, desc: '1pt.co' },
+    ouo: { func: short.ouo, desc: 'Ouo.io' },
+    rebrandly: { func: short.rebrandly, desc: 'Rebrandly' },
+    shorte: { func: short.shorte, desc: 'Shorte.st' },
+    shorturl: { func: short.shorturl, desc: 'ShortURL.at' },
+    shrtco: { func: short.shrtco, desc: 'Shrtco.de' },
+    tinyurl: { func: short.tinyurl, desc: 'TinyURL' },
+    tnyim: { func: short.tnyim, desc: 'Tny.im' },
+    vgd: { func: short.vgd, desc: 'V.gd' },
+    vurl: { func: short.vurl, desc: 'Vurl.com' },
+    ssur: { func: short.ssur, desc: 'Ssurls.com' },
+    adfly: { func: short.adfly, desc: 'AdFly' },
+};
 
-    if (!text) {
-        const asyncFunctionsList = Object.keys(asyncFunctions).map((func, index) => `- ${index + 1}. ${func}`).join('\n');
-        return m.reply(`ℹ️ *Daftar Fungsi Short Link:*\n${asyncFunctionsList}\n\nℹ️ Gunakan format: .short <urutan> <URL>\n\nℹ️ Contoh Penggunaan: .short 1|https://example.com`);
-    }
+const isValidLink = (link) => {
+    const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+    return urlPattern.test(link);
+};
+
+const handler = async (m, { text }) => {
+    const asyncFunctionsList = Object.keys(asyncFunctions).map((func, index) => `- ${index + 1}. ${func}: ${asyncFunctions[func].desc}`).join('\n');
+    const [order, url] = text?.split('|') ?? [];
 
     try {
-        const [order, url] = text.split('|') ?? [];
-        if (!order || !url) throw new Error("ℹ️ Input tidak valid. Gunakan format: .short <urutan> <URL>\n\nℹ️ Contoh Penggunaan: .short 1|https://example.com");
+        if (!order || !url) throw new Error(`Input tidak valid. Gunakan format:\n\n.short <urutan> <URL>\n\nContoh Penggunaan:\n\n.short 1|https://example.com\n\nDaftar Fungsi Short Link:\n\n${asyncFunctionsList}`);
 
         const numericOrder = parseInt(order);
-        if (isNaN(numericOrder) || numericOrder <= 0 || numericOrder > Object.keys(asyncFunctions).length) {
-            throw new Error("ℹ️ Urutan fungsi tidak valid. Gunakan nomor fungsi yang benar.");
-        }
+        if (isNaN(numericOrder) || numericOrder <= 0 || numericOrder > Object.keys(asyncFunctions).length) throw new Error("Urutan fungsi tidak valid. Gunakan nomor fungsi yang benar.");
 
         m.reply("*ᴄᴏɴᴠᴇʀᴛɪɴɢ...*");
 
         const funcName = Object.keys(asyncFunctions)[numericOrder - 1];
         if (!funcName) throw new Error(`Async function dengan urutan ${order} tidak ditemukan.`);
 
-        const output = await asyncFunctions[funcName](url);
+        const output = await asyncFunctions[funcName].func(url);
 
-        const reslink = output instanceof Object ?
-            Object.entries(output).map(([key, value]) => `  ○ *${key.toUpperCase()}:* ${value}`).join('\n') :
-            `🚀 *ʟɪɴᴋ:*\n${output}`;
+        const reslink = isValidLink(output) ? `🚀 *ʟɪɴᴋ:*\n${output}\n\n*ʟɪɴᴋ ᴅᴇsᴄʀɪᴘᴛɪᴏɴ:* ${asyncFunctions[funcName].desc}` : 'Not Found';
 
         m.reply(reslink);
     } catch (error) {
