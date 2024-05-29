@@ -76,7 +76,7 @@ class SnakeAndLadderGame {
         this.started = true;
     }
 
-    rollDice = (num) => new Array.from({
+    rollDice = (num) => Array.from({
         length: num
     }, () => Math.floor(Math.random() * 6) + 1)[Math.floor(Math.random() * num)];
 
@@ -245,74 +245,61 @@ class SnakeAndLadderGame {
     isGameStarted = () => this.started;
 }
 
-const handler = async (m, {
-    args,
-    usedPrefix,
-    command
-}) => {
+const handler = async (m, { args, usedPrefix, command }) => {
     conn.ulartangga = conn.ulartangga || {};
-    const sessions = (conn.ulartangga_ = conn.ulartangga_ || {});
+    const sessions = conn.ulartangga;
     const sessionId = m.chat;
     const session = sessions[sessionId] || (sessions[sessionId] = new GameSession(sessionId, conn));
     const game = session.game;
-    const {
-        state
-    } = conn.ulartangga[m.chat] || {
-        state: false
-    };
+    const state = session.state || false;
 
     switch (args[0]) {
         case 'join':
-            if (state) return m.reply('🛑 *Permainan sudah dimulai.*\nTidak dapat bergabung.');
+            if (state) {
+                return m.reply('🛑 *Permainan sudah dimulai.*\nTidak dapat bergabung.');
+            }
             const playerName = m.sender;
             const joinSuccess = game.addPlayer(playerName);
-            joinSuccess ? m.reply(`👋 ${game.formatPlayerName(playerName)} *bergabung ke dalam permainan.*`, null, {
-                mentions: [playerName]
-            }) : m.reply('*Anda sudah bergabung atau permainan sudah penuh.*\nTidak dapat bergabung.');
+            if (joinSuccess) {
+                m.reply(`👋 ${game.formatPlayerName(playerName)} *bergabung ke dalam permainan.*`, null, { mentions: [playerName] });
+            } else {
+                m.reply('*Anda sudah bergabung atau permainan sudah penuh.*\nTidak dapat bergabung.');
+            }
             break;
 
         case 'start':
-            if (state) return m.reply('🛑 *Permainan sudah dimulai.*\nTidak dapat memulai ulang.');
-            if (game.players.length === 2) {
-                await game.startGame(m, game.players[0], game.players[1]);
-                await m.reply('🛑 *Permainan sudah dimulai.*\nTidak dapat memulai ulang.');
-                return;
-            } else {
-                await m.reply('👥 *Tidak cukup pemain untuk memulai permainan.*\nDiperlukan minimal 2 pemain.');
-                return;
+            if (state) {
+                return m.reply('🛑 *Permainan sudah dimulai.*\nTidak dapat memulai ulang.');
             }
-            conn.ulartangga[m.chat] = {
-                ...conn.ulartangga[m.chat],
-                state: true
-            };
+            if (game.players.length >= 2) {
+                await game.startGame(m, game.players[0], game.players[1]);
+                sessions[sessionId].state = true;
+                m.reply('🛑 *Permainan sudah dimulai.*');
+            } else {
+                m.reply('👥 *Tidak cukup pemain untuk memulai permainan.*\nDiperlukan minimal 2 pemain.');
+            }
             break;
 
         case 'roll':
-            if (!state) return m.reply(`🛑 *Permainan belum dimulai.*\nKetik *${usedPrefix + command} start* untuk memulai.`);
+            if (!state) {
+                return m.reply(`🛑 *Permainan belum dimulai.*\nKetik *${usedPrefix + command} start* untuk memulai.`);
+            }
             if (game.isGameStarted()) {
                 const currentPlayer = game.players[game.currentPlayerIndex];
                 if (m.sender !== currentPlayer) {
-                    await m.reply(`🕒 *Bukan giliranmu.* \n\nSekarang giliran ${game.formatPlayerName(currentPlayer)}`, null, {
-                        mentions: [currentPlayer]
-                    });
-                    return;
+                    await m.reply(`🕒 *Bukan giliranmu.* \n\nSekarang giliran ${game.formatPlayerName(currentPlayer)}`, null, { mentions: [currentPlayer] });
                 } else {
                     await game.playTurn(m, currentPlayer);
-                    return;
                 }
             } else {
-                await m.reply(`🛑 *Permainan belum dimulai.*\nKetik *${usedPrefix + command} start* untuk memulai.`);
-                return;
+                m.reply(`🛑 *Permainan belum dimulai.*\nKetik *${usedPrefix + command} start* untuk memulai.`);
             }
             break;
 
         case 'reset':
         case 'stop':
         case 'end':
-            conn.ulartangga[m.chat] = {
-                ...conn.ulartangga[m.chat],
-                state: false
-            };
+            sessions[sessionId].state = false;
             session.game.resetSession();
             delete sessions[sessionId];
             await m.reply('🔄 *Sesi permainan direset.*');
