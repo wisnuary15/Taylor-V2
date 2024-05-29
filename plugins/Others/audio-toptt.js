@@ -18,8 +18,8 @@ let handler = async (m, {
         let audio = await toPTT(media, 'mp3')
         if (!audio.data) throw 'Can\'t convert media to audio'
 
-        conn.sendFile(m.chat, audio.data, 'audio.mp3', '', m, true, {
-            mimetype: 'audio/mp4',
+        await conn.sendFile(m.chat, audio.data, 'audio.mp3', '', m, true, {
+            mimetype: 'audio/ogg; codecs=opus',
             ptt: true
         })
     } catch (error) {

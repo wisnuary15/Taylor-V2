@@ -1,5 +1,6 @@
 import {
-    toAudio
+    toAudio,
+    toAudio8k
 } from '../../lib/converter.js'
 
 let handler = async (m, {
@@ -15,15 +16,13 @@ let handler = async (m, {
         let media = await q.download?.()
         if (!media) throw 'Can\'t download media'
 
-        let audio = await toAudio(media, 'mp4')
+        let audio = await toAudio(media, 'mp3') || await toAudio8k(media, 'mp3')
         if (!audio.data) throw 'Can\'t convert media to audio'
         
-        await conn.sendMessage(m.chat, {
-            audio: audio.data,
-            mimetype: "audio/mp4"
-        }, {
-            quoted: m
-        });
+        await conn.sendFile(m.chat, audio.data, 'audio.mp3', '', m, false, {
+            mimetype: 'audio/mp4',
+            ptt: false
+        })
     } catch (error) {
         console.error(error)
         throw `An error occurred: ${error}`
