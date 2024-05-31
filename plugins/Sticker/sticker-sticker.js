@@ -93,35 +93,48 @@ let handler = async (m, {
                 }
             }
         } else if (/extendedTextMessage/g.test(mime)) {
-            let emj;
-            let emojiData;
-            if (!(q.text.match(emojiRegex()) || [])[0]) return m.reply(`No emojis found in the input text!\nOr\nReply an image/video/sticker with command ${usedPrefix + command}`)
-            const firstEmoji = (q.text.match(emojiRegex()) || [])[0];
-            if (firstEmoji) {
-                try {
-                    emojiData = await emojiPedia(firstEmoji)
-                    emj = getUrlByName(emojiData, args[0] || "WhatsApp")
-                } catch (e) {
-                    try {
-                        emojiData = (await emojiGraph(await searchEmoji(firstEmoji)[0]))[0].vendors;
-                        emj = getUrlByName(emojiData, args[0] || "Whatsapp")
-                    } catch (e) {
-                        throw "Failed";
-                    }
-                }
-                try {
-                    stiker = await _createSticker(false, emj, packnames || packname, authors || m.name, 30)
-                } catch (e) {
-                    try {
-                        stiker = await sticker(false, emj, packnames || packname, authors || m.name)
-                    } catch (e) {
-                        throw "Failed"
-                    }
-                }
-            } else {
-                await m.reply("No emojis found in the input text.");
+    let emj;
+    let emojiData;
+    let foundLinks;
+    const text = q.text;
+    const urlRegex = /https?:\/\/[^\s]+?\.(jpg|jpeg|png|gif|bmp|webp|mp4|mkv|avi|mov|wmv|flv)(\?[^\s]*)?/gi;
+    const firstEmoji = (text.match(emojiRegex()) || [])[0];
+
+    if (firstEmoji) {
+        try {
+            emojiData = await emojiPedia(firstEmoji);
+            emj = getUrlByName(emojiData, args[0] || "WhatsApp");
+        } catch (e) {
+            try {
+                emojiData = (await emojiGraph(await searchEmoji(firstEmoji)[0]))[0].vendors;
+                emj = getUrlByName(emojiData, args[0] || "Whatsapp");
+            } catch (e) {
+                throw "Failed";
             }
-        } else return m.reply(`No emojis found in the input text!\nOr\nReply an image/video/sticker with command ${usedPrefix + command}`)
+        }
+        try {
+            stiker = await _createSticker(false, emj, packnames || packname, authors || m.name, 30);
+        } catch (e) {
+            stiker = await sticker(false, emj, packnames || packname, authors || m.name).catch(() => { throw "Failed"; });
+        }
+    } else {
+        foundLinks = text.match(urlRegex);
+        if (foundLinks && foundLinks.length > 0) {
+            for (let i = 0; i < foundLinks.length; i++) {
+                emj = foundLinks[i];
+                if (emj) {
+                    try {
+                        stiker = await _createSticker(false, emj, packnames || packname, authors || m.name, 30);
+                    } catch (e) {
+                        stiker = await sticker(false, emj, packnames || packname, authors || m.name).catch(() => { throw "Failed"; });
+                    }
+                }
+            }
+        } else {
+            return m.reply(`No emojis or links found in the input text!\nOr\nReply with an image/video/sticker with command ${usedPrefix + command}`);
+        }
+    }
+} else return m.reply(`No emojis found in the input text!\nOr\nReply an image/video/sticker with command ${usedPrefix + command}`)
     } catch (e) {
         console.log(e)
         stiker = e
@@ -139,7 +152,7 @@ function getUrlByName(data, query) {
     return matchedObject ? matchedObject.image : data.length > 0 ? data[Math.floor(Math.random() * data.length)].image : null;
 }
 
-const isUrl = (text) => text.match(new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)(jpe?g|gif|png)/, 'gi'))
+const isUrl = (text) => text.match(/https?:\/\/[^\s]+?\.(jpg|jpeg|png|gif|bmp|webp|mp4|mkv|avi|mov|wmv|flv)(\?[^\s]*)?/gi)
 
 async function _createSticker(img, url, packName, authorName, quality = 30) {
     try {
