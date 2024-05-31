@@ -72,7 +72,7 @@ async function loadConfig() {
         /** Apikey  **/
         global.APIKeys = {
             "https://api.neoxr.my.id": pickRandom(["5VC9rvNx", "lucycat"]),
-            "https://api.lolhuman.xyz": pickRandom(["043c5de3b7cd6b1b8f2a0f90", "e1a815979e6adfc071b7eafc", "ed78c137a46873c5b8e5fe3b", "IchanZX", "GataDios"]),
+            "https://api.lolhuman.xyz": pickRandom(["043c5de3b7cd6b1b8f2a0f90", "e1a815979e6adfc071b7eafc", "ed78c137a46873c5b8e5fe3b", "IchanZX", "GataDios", "elainaai"]),
             "https://api.xteam.xyz": "HIRO",
             "https://api.xyroinee.xyz": "yqiBQF86F4",
             "https://api.zeks.xyz": "apivinz",
@@ -84,7 +84,7 @@ async function loadConfig() {
         };
 
         /** Lolhuman  **/
-        global.lolkey = pickRandom(["043c5de3b7cd6b1b8f2a0f90", "e1a815979e6adfc071b7eafc", "ed78c137a46873c5b8e5fe3b", "IchanZX", "GataDios"]);
+        global.lolkey = pickRandom(["043c5de3b7cd6b1b8f2a0f90", "e1a815979e6adfc071b7eafc", "ed78c137a46873c5b8e5fe3b", "IchanZX", "GataDios", "elainaai"]);
         /** XyroineeApi  **/
         global.xyro = "yqiBQF86F4";
 
