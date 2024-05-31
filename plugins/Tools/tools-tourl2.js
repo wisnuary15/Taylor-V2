@@ -9,8 +9,24 @@ const handler = async (m) => {
         if (!/image|video|audio|sticker|document/.test(mime)) throw 'No media found'
 
         const media = await q.download(true)
-        const { files } = await uploadFile(media)
-        await m.reply(files[0].url)
+        const stats = fs.statSync(media)
+        const fileSizeInBytes = stats.size
+        
+        if (fileSizeInBytes === 0) {
+            await m.reply('File kosong')
+            await fs.promises.unlink(media)
+            return
+        }
+        
+        if (fileSizeInBytes > 1073741824) {
+            await m.reply('File terlalu besar, maksimal ukuran adalah 1 GB')
+            await fs.promises.unlink(media)
+            return
+        }
+
+        const { files } = await uploadUguu(media)
+        const caption = `📮 *Link:*\n${files[0]?.url}`
+        await m.reply(caption)
     } catch (e) {
         await m.reply(`Error: ${e}`)
     }
@@ -20,7 +36,7 @@ handler.help = ['tourl2']
 handler.command = /^(tourl2)$/i
 export default handler
 
-const uploadFile = async (path) => {
+const uploadUguu = async (path) => {
     try {
         const form = new FormData()
         form.append('files[]', fs.createReadStream(path))
@@ -33,6 +49,7 @@ const uploadFile = async (path) => {
         await fs.promises.unlink(path)
         return json
     } catch (e) {
+        await fs.promises.unlink(path)
         throw 'Upload failed'
     }
 }

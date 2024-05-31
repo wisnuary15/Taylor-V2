@@ -9,10 +9,14 @@ const handler = async (m, { args, usedPrefix, command }) => {
         if (!mime) throw 'No media found'
 
         const media = await q.download()
+        const size = media.length
+        if (size === 0) return await m.reply('File kosong')
+        if (size > 1073741824) return await m.reply('File terlalu besar, maksimal ukuran adalah 1 GB')
+
         const isTele = /image\/(png|jpe?g|gif)|video\/mp4/.test(mime)
         const link = await (isTele ? uploadImage : uploadFile)(media)
 
-        const caption = `📮 *Link:*\n${link}\n\n📊 *Size:* ${formatBytes(media.length)}\n📛 *Expired:* ${isTele ? 'No Expiry Date' : 'Unknown'}\n\n🔗 *Short Link:* ${await shortUrl(link)}`
+        const caption = `📮 *Link:*\n${link}\n\n📊 *Size:* ${formatBytes(size)}\n📛 *Expired:* ${isTele ? 'No Expiry Date' : 'Unknown'}\n\n🔗 *Short Link:* ${await shortUrl(link)}`
         await m.reply(caption)
     } catch (e) {
         await m.reply(`Error: ${e}`)
