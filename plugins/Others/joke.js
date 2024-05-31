@@ -1,24 +1,50 @@
-// Tolong jangan bully saya bang,, saya cuman mau bisnis :)
-import fetch from 'node-fetch'
-import fs from 'fs'
+import fetch from 'node-fetch';
+import { translate } from '@vitalets/google-translate-api';
 
-let handler = async (m, {
-    conn,
-    command,
-    usedPrefix,
-    args
-}) => {
-    let pn = await fetch(`https://api.zacros.my.id/other/meme`)
-    let pnn = await pn.json()
-    let pnnnn = `*Result:* ${pnn.title}
-        Url: ${pnn.url}
-        Ups: ${pnn.ups}
-        Comment: ${pnn.comments}
-        `
-    await conn.sendFile(m.chat, pnn.image, '', pnnnn, m)
+let handler = async (m, {}) => {
+  try {
+    let { setup, delivery } = await getJoke();
+    let joke = setup + '\n\n' + delivery;
+    if (!joke) return m.reply('Failed to fetch joke');
+    let translatedJoke = await translateToIndonesian(joke);
+    let headerJoke = '*[ RANDOM JOKES ]*\n\n- ';
+    await m.reply(headerJoke + translatedJoke);
+  } catch (e) {
+    console.error('Error in handler:', e);
+    await m.reply('Terjadi kesalahan saat mengambil jokes.');
+  }
+};
+
+handler.help = ['jokes'];
+handler.tags = ['edukasi'];
+handler.command = /^(jokes|jokesunik)$/i;
+export default handler;
+
+async function getJoke() {
+  try {
+    const response = await fetch('https://v2.jokeapi.dev/joke/Programming,Miscellaneous,Pun?blacklistFlags=nsfw,religious,racist,sexist,explicit', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+    const data = await response.json();
+    return data || {};
+  } catch (error) {
+    console.error('Error in getJoke:', error);
+    return null;
+  }
 }
-handler.help = ['jokes (reply)']
-handler.tags = ['sticker']
-handler.command = /^jokes$/i
 
-export default handler
+async function translateToIndonesian(text) {
+  try {
+    const result = await translate(text, { to: 'id' });
+    return result.text || text;
+  } catch (error) {
+    console.error('Error in translateToIndonesian:', error);
+    return text;
+  }
+}

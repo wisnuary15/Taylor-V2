@@ -1,26 +1,52 @@
-import fetch from "node-fetch"
+import fetch from 'node-fetch';
+import { translate } from '@vitalets/google-translate-api';
 
-let handler = async (m, {
-    conn,
-    args,
-    usedPrefix,
-    command
-}) => {
-    try {
-        let fak = await fetch(global.API("lolhuman", "/api/random/faktaunik", {}, "apikey"))
-        let ta = await fak.json()
-        await conn.reply(m.chat, "*Taukah kamu ternyata*\n" + ta.result + "\n\n*Powered by:* lolhuman", m)
-    } catch (e) {
-        try {
-            let fak = await fetch(global.API("zenz", "/randomtext/faktaunik", {}, "apikey"))
-            let ta = await fak.json()
-            await conn.reply(m.chat, "*Taukah kamu ternyata*\n" + ta.result.message + "\n\n*Powered by:* zenzapi", m)
-        } catch (e) {
-            throw eror
-        }
-    }
+let handler = async (m, {}) => {
+  try {
+    let fact = await getFact();
+    if (!fact) return m.reply('Failed to fetch fact');
+    let translatedFact = await translateToIndonesian(fact);
+    let headerFact = '*[ RANDOM FACT ]*\n\n- ';
+    await m.reply(headerFact + translatedFact);
+  } catch (e) {
+    console.error('Error in handler:', e);
+    await m.reply('Terjadi kesalahan saat mengambil fakta.');
+  }
+};
+
+handler.help = ['fakta'];
+handler.tags = ['edukasi'];
+handler.command = /^(fakta|faktaunik)$/i;
+export default handler;
+
+const api_key = ['j2McNJfQjYCcUz06O1CpC9vqDweRlqEaQDoXMj8w', 'P9nis6bPQQRNLyrFK/yPaw==VJczzEp4moLZHGrk', 'XFyJSx4tBYXJ0Pmvahr98A==DHpgfdRNRxLJQP9v'].getRandom();
+
+async function getFact() {
+  try {
+    const response = await fetch('https://api.api-ninjas.com/v1/facts', {
+      method: 'GET',
+      headers: {
+        'X-Api-Key': api_key,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+    const data = await response.json();
+    return data[0]?.fact || 'Nothing';
+  } catch (error) {
+    console.error('Error in getFact:', error);
+    return null;
+  }
 }
-handler.help = ['fakta']
-handler.tags = ['edukasi']
-handler.command = /^(fakta|faktaunik)$/i
-export default handler
+
+async function translateToIndonesian(text) {
+  try {
+    const result = await translate(text, { to: 'id' });
+    return result.text || text;
+  } catch (error) {
+    console.error('Error in translateToIndonesian:', error);
+    return text;
+  }
+}
