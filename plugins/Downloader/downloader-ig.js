@@ -98,7 +98,7 @@ let handler = async (m, {
         }
         if (versions === "v7") {
             let results = await instagramGetUrl(links);
-            if (results.insBos) {
+            if (results && results.insBos) {
                 let caption = `*[ I N S T A G R A M - ${versions.toUpperCase()} ]*\n\n`;
                 for (let i = 0; i < results.insBos.length; i++) {
                     let media = results.insBos[i];
@@ -195,17 +195,35 @@ async function instagramGetUrl(url_media) {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0",
                 Accept: "application/json, text/plain, */*",
                 "Accept-Language": "pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3",
-                "Accept-Encoding": "gzip, deflate, br",
-                Origin: "https://www.sssgram.com",
+                "X-Requested-With": "XMLHttpRequest",
                 Connection: "keep-alive",
-                Referer: "https://www.sssgram.com/",
-                "Sec-Fetch-Dest": "empty",
-                "Sec-Fetch-Mode": "cors",
-                "Sec-Fetch-Site": "same-site",
-            },
+                Referer: "https://api.sssgram.com/",
+                TE: "Trailers"
+            }
         });
-        return response.data.result;
-    } catch (err) {
-        throw err;
+        const data = response.data;
+        if (data.insBos && Array.isArray(data.insBos)) {
+            return {
+                insBos: data.insBos.map((ins) => ({
+                    id: ins.id,
+                    author: ins.author,
+                    type: ins.type,
+                    url: ins.url,
+                    cover: ins.cover,
+                    thumbnail: ins.thumbnail,
+                    duration: ins.duration,
+                    date: ins.date,
+                    views: ins.views,
+                    likes: ins.likes,
+                    comments: ins.comments,
+                    description: ins.description
+                }))
+            };
+        } else {
+            throw new Error("Invalid response structure");
+        }
+    } catch (error) {
+        console.error("Error fetching Instagram URL:", error);
+        return null;
     }
-};
+}
