@@ -980,8 +980,8 @@ export async function handler(chatUpdate) {
                     step: null,
                     soal: null
                 }
-            let settings = global.db?.data?.settings[this.user.jid]
-            if (typeof settings !== "object") global.db.data.settings[this.user.jid] = {}
+            let settings = global.db?.data?.settings[this.user?.jid]
+            if (typeof settings !== "object") global.db.data.settings[this.user?.jid] = {}
             if (settings) {
                 if (!("self" in settings)) settings.self = false
                 if (!("pconly" in settings)) settings.pconly = false
@@ -996,7 +996,7 @@ export async function handler(chatUpdate) {
                 if (!("status" in settings)) settings.status = 0
                 if (!("antibot" in settings)) settings.antibot = false
 
-            } else global.db.data.settings[this.user.jid] = {
+            } else global.db.data.settings[this.user?.jid] = {
                 self: false,
                 pconly: false,
                 gconly: false,
@@ -1017,12 +1017,12 @@ export async function handler(chatUpdate) {
         if (typeof m.text !== 'string')
             m.text = ''
 
-        const isROwner = [this.decodeJid(this.user.id), ...global.owner.map(([number]) => number)].map(v => v.replace(/[^0-9]/g, "") + "@s.whatsapp.net").includes(m.sender)
+        const isROwner = [this.decodeJid(this.user?.id), ...global.owner?.map(([number]) => number)].map(v => v.replace(/[^0-9]/g, "") + "@s.whatsapp.net").includes(m.sender)
         const isOwner = isROwner || m.fromMe
         const isMods = isOwner || global.mods.map(v => v.replace(/[^0-9]/g, "") + "@s.whatsapp.net").includes(m.sender)
         const isPrems = isROwner || global.prems.map(v => v.replace(/[^0-9]/g, "") + "@s.whatsapp.net").includes(m.sender)
 
-        if (opts["queque"] || global.db?.data?.settings[this.user.jid].queque && m.text && !m.fromMe && !(isMods || isPrems)) {
+        if (opts["queque"] || global.db?.data?.settings[this.user?.jid].queque && m.text && !m.fromMe && !(isMods || isPrems)) {
             const id = m.id
             this.msgqueque.add(id)
             await this.msgqueque.waitQueue(id)
@@ -1044,7 +1044,7 @@ export async function handler(chatUpdate) {
         const groupMetadata = (m.isGroup ? ((this.chats[m.chat] || {}).metadata || await this.groupMetadata(m.chat).catch(_ => null)) : {}) || {}
         const participants = (m.isGroup ? groupMetadata.participants : []) || []
         const user = (m.isGroup ? participants.find(u => this.decodeJid(u.id) === m.sender) : {}) || {}
-        const bot = (m.isGroup ? participants.find(u => this.decodeJid(u.id) == this.user.jid) : {}) || {}
+        const bot = (m.isGroup ? participants.find(u => this.decodeJid(u.id) == this.user?.jid) : {}) || {}
         const isRAdmin = user?.admin == "superadmin" || false
         const isAdmin = isRAdmin || user?.admin == "admin" || false
         const isBotAdmin = bot?.admin || false
@@ -1064,7 +1064,7 @@ export async function handler(chatUpdate) {
                     })
                 } catch (e) {
                     console.error(e)
-                    for (let [jid] of global.owner.filter(([number, _, isDeveloper]) => isDeveloper && number)) {
+                    for (let [jid] of global.owner?.filter(([number, _, isDeveloper]) => isDeveloper && number)) {
                         let data = (await this.onWhatsApp(jid))[0] || {}
                         if (data.exists)
                             m.reply(`*🗂️ Plugin:* ${name}\n*👤 Sender:* ${m.sender}\n*💬 Chat:* ${m.chat}\n*💻 Command:* ${m.text}\n\n\${format(e)}`.trim(), data.jid)
@@ -1093,7 +1093,7 @@ export async function handler(chatUpdate) {
                 ]
             ).find(p => p[1])
             if (typeof plugin.before === "function") {
-                if (await plugin.before.call(this, m, {
+                if (await plugin.before?.call(this, m, {
                         match,
                         conn: this,
                         participants,
@@ -1117,7 +1117,7 @@ export async function handler(chatUpdate) {
             if (opts && match && m) {
                 let result = ((opts?.['multiprefix'] ?? true) && (match[0] || "")[0]) || ((opts?.['noprefix'] ?? false) ? null : (match[0] || "")[0]);
                 usedPrefix = result;
-                let noPrefix = !result ? m.text : m.text.replace(result, "");
+                let noPrefix = !result ? m.text : m.text?.replace(result, "");
                 let args_v2 = noPrefix.trim().split(/ +/);
                 let [command, ...args] = noPrefix.trim().split(" ").filter(v => v);
                 args = args || [];
@@ -1148,10 +1148,10 @@ export async function handler(chatUpdate) {
                 if (!isAccept) continue
                 m.plugin = name
 
-                if (m.chat in global.db?.data?.chats || m.sender in global.db?.data?.users || this.user.jid in global.db?.data?.settings) {
+                if (m.chat in global.db?.data?.chats || m.sender in global.db?.data?.users || this.user?.jid in global.db?.data?.settings) {
                     let chat = global.db?.data?.chats[m.chat]
                     let user = global.db?.data?.users[m.sender]
-                    let _chat = global.db?.data?.settings[this.user.jid]
+                    let _chat = global.db?.data?.settings[this.user?.jid]
                     if (
                         name != "/plugins/Owner/owner-unbanchat.js" &&
                         name != "/plugins/Owner/owner-exec.js" &&
@@ -1190,8 +1190,8 @@ export async function handler(chatUpdate) {
                     (plugin.register && !_user.registered && (fail("unreg", m, this), true)) ||
                     (plugin.nsfw && global.db?.data?.chats[m.chat].nsfw && (fail("nsfw", m, this), true)) ||
                     (global.plugins[name].error && (fail("error", m, this), true)) ||
-                    (opts['antirpg'] && global.db?.data?.settings[this.user.jid].antirpg && plugin.tags && plugin.tags?.includes("rpg") && (fail("rpg", m, this), true)) ||
-                    (opts['restrict'] && global.db?.data?.settings[this.user.jid].restrict && plugin.tags && plugin.tags?.includes("admin") && (fail("restrict", m, this), true))
+                    (opts['antirpg'] && global.db?.data?.settings[this.user?.jid].antirpg && plugin.tags && plugin.tags?.includes("rpg") && (fail("rpg", m, this), true)) ||
+                    (opts['restrict'] && global.db?.data?.settings[this.user?.jid].restrict && plugin.tags && plugin.tags?.includes("admin") && (fail("restrict", m, this), true))
                 ) return false;
                 m.isCommand = true
 
@@ -1259,7 +1259,7 @@ export async function handler(chatUpdate) {
                         for (let key of Object.values(global.APIKeys))
                             text = text.replace(new RegExp(key, "g"), "#HIDDEN#")
                         if (e.name)
-                            for (let [jid] of global.owner.filter(([number, _, isDeveloper]) => isDeveloper && number)) {
+                            for (let [jid] of global.owner?.filter(([number, _, isDeveloper]) => isDeveloper && number)) {
                                 let data = (await this.onWhatsApp(jid))[0] || {}
                                 if (data.exists)
                                     return m.reply(`*🗂️ Plugin:* ${m.plugin}\n*👤 Sender:* ${m.sender}\n*💬 Chat:* ${m.chat}\n*💻 Command:* ${usedPrefix}${command} ${args.join(" ")}\n📄 *Error Logs:*\n\n${text}`.trim(), data.jid)
@@ -1269,7 +1269,7 @@ export async function handler(chatUpdate) {
                 } finally {
                     if (typeof plugin.after === "function") {
                         try {
-                            await plugin.after.call(this, m, extra)
+                            await plugin.after?.call(this, m, extra)
                         } catch (e) {
                             console.error(e)
                         }
@@ -1283,7 +1283,7 @@ export async function handler(chatUpdate) {
     } catch (e) {
         console.error(e)
     } finally {
-        if (opts["queque"] || global.db?.data?.settings[this.user.jid].queque && m.text) {
+        if (opts["queque"] || global.db?.data?.settings[this.user?.jid].queque && m.text) {
             const id = m.id
             this.msgqueque.unqueue(id)
         }
@@ -1312,11 +1312,11 @@ export async function handler(chatUpdate) {
         }
 
         try {
-            if (!opts["noprint"] || global.db?.data?.settings[this.user.jid].noprint) await (await import("./lib/print.js")).default(m, this)
+            if (!opts["noprint"] || global.db?.data?.settings[this.user?.jid].noprint) await (await import("./lib/print.js")).default(m, this)
         } catch (e) {
             console.log(m, m.quoted, e)
         }
-        if (opts["autoread"] || global.db?.data?.settings[this.user.jid].autoread)
+        if (opts["autoread"] || global.db?.data?.settings[this.user?.jid].autoread)
             await this.chatRead(m.key).catch(() => {})
     }
 }
@@ -1330,7 +1330,7 @@ export async function participantsUpdate({
     participants,
     action
 }) {
-    if (opts["self"] || global.db?.data?.settings[this.user.jid].self || this.isInit) return;
+    if (opts["self"] || global.db?.data?.settings[this.user?.jid].self || this.isInit) return;
     if (global.db.data == null) await loadDatabase();
     const chat = global.db?.data?.chats[id] || {};
     const emoji = {
@@ -1364,7 +1364,14 @@ export async function participantsUpdate({
                     await this.reply(
                         id,
                         welcomeText.replace("@user", "@" + participants[0].split("@")[0]) + lapor,
-                        fakes, {
+                        global.fakes || {
+  key: { participant: '0@s.whatsapp.net', remoteJid: 'status@broadcast' },
+  message: {
+    newsletterAdminInviteMessage: {
+      caption: welcomeText.replace("@user", "@" + participants[0].split("@")[0]) + lapor,
+    }
+  }
+}, {
                             contextInfo: {
                                 mentionedJid: [participants[0]],
                                 externalAdReply: {
@@ -1393,7 +1400,14 @@ export async function participantsUpdate({
                 this.reply(
                     id,
                     promoteText.trim(),
-                    fakes, {
+                    global.fakes || {
+  key: { participant: '0@s.whatsapp.net', remoteJid: 'status@broadcast' },
+  message: {
+    newsletterAdminInviteMessage: {
+      caption: promoteText.trim(),
+    }
+  }
+}, {
                         contextInfo: {
                             mentionedJid: [participants[0]],
                             externalAdReply: {
@@ -1446,7 +1460,7 @@ export async function participantsUpdate({
 export async function groupsUpdate(groupsUpdate) {
     for (const groupUpdate of groupsUpdate) {
         const id = groupUpdate.id
-        if (opts["self"] || global.db?.data?.settings[this.user.jid].self) continue;
+        if (opts["self"] || global.db?.data?.settings[this.user?.jid].self) continue;
         if (!id) continue
         let chats = global.db?.data?.chats[id] || {}
         const emoji = {
@@ -1504,7 +1518,14 @@ export async function groupsUpdate(groupsUpdate) {
         this.reply(
             id,
             text.trim(),
-            fakes, {
+            global.fakes || {
+  key: { participant: '0@s.whatsapp.net', remoteJid: 'status@broadcast' },
+  message: {
+    newsletterAdminInviteMessage: {
+      caption: text.trim(),
+    }
+  }
+}, {
                 contextInfo: {
                     mentionedJid: [],
                     externalAdReply: {
