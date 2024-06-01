@@ -1,10 +1,8 @@
 import fetch from 'node-fetch';
 import moment from 'moment-timezone';
-import fs from 'fs';
 import path from 'path';
-import util from 'util';
 
-let handler = async (m, { conn }) => {
+const handler = async (m, { conn }) => {
     try {
         let response = await fetch("https://raw.githubusercontent.com/AmmarrBN/dbbot/main/nsfw/nsfwml.json");
         let json = await response.json();
@@ -41,16 +39,13 @@ function ucapan() {
     const time = moment.tz('Asia/Jakarta').format('HH');
     let res = "./vn/ara.mp3";
 
-    if (time >= 4) {
+    if (time >= 4 && time < 10) {
         res = "./vn/ara1.mp3";
-    }
-    if (time > 10) {
+    } else if (time >= 10 && time < 15) {
         res = "./vn/ara2.mp3";
-    }
-    if (time >= 15) {
+    } else if (time >= 15 && time < 18) {
         res = "./vn/ara3.mp3";
-    }
-    if (time >= 18) {
+    } else if (time >= 18) {
         res = "./vn/ara4.mp3";
     }
 
