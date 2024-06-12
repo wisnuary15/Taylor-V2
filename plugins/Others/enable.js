@@ -52,7 +52,7 @@ const handler = async (m, {
     `🛠️ *DAFTAR FITUR*\n${featureStatus}\n*📝 CARA MENGGUNAKAN:*\n→ ${usedPrefix + command} [nomor atau nama fitur]`
     .trimStart();
   if (!features.includes(featureName)) return sections.length ? await conn.sendButtonMessages(m.chat, [
-    [listEnab, wm, logo, [], null, [],
+    [listEnab, wm, null, [], null, [],
       [
         ["Open Here", sections]
       ], m
@@ -83,6 +83,7 @@ const handler = async (m, {
 }
 handler.help = ["en", "dis"].map(v => v + "able <nomor atau nama fitur>");
 handler.tags = ["group", "owner"];
-handler.command = /^((en|dis)able|(tru|fals)e|(turn)?o(n|ff)|[01])$/i;
-handler.admin = true;
+handler.command = /^((en|dis)able|(tru|fals)e|(turn)?o(n|ff))$/i;
+handler.owner = true;
+handler.rowner = true;
 export default handler;
