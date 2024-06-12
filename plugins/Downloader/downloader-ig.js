@@ -3,12 +3,18 @@ import cheerio from 'cheerio';
 import {
   instagram
 } from "@xct007/frieren-scraper";
-const {
+import {
   instagramdl
-} = await (await import("@bochilteam/scraper"));
+} from "@bochilteam/scraper";
 import {
   Download
 } from "../../lib/download/get-download.js";
+import crypto from 'crypto';
+
+const generateHash = (input) => {
+    return crypto.createHash('sha256').update(input).digest('hex');
+};
+
 const handler = async (m, {
   command,
   usedPrefix,
@@ -17,10 +23,10 @@ const handler = async (m, {
   args
 }) => {
   let lister = Array.from({
-    length: 7
+    length: 8
   }, (_, index) => `v${index + 1}`);
   let [links, versions] = text.split(" ");
-  versions = versions ? versions : lister[Math.floor(Math.random() * lister.length)];
+  versions = versions ? versions : lister[Math.floor(Math.random() * lister?.length)];
   if (!lister.includes(versions.toLowerCase())) return m.reply("*Example:*\n" + usedPrefix + command +
     " link v2\n\n*Pilih type yg ada*\n" + lister.map((v, index) => "  ○ " + v.toUpperCase()).join("\n"));
   try {
@@ -29,7 +35,7 @@ const handler = async (m, {
       let results = await instagram.v1(links);
       if (results) {
         let caption = `*[ I N S T A G R A M - ${versions.toUpperCase()} ]*\n\n`;
-        for (let i = 0; i < results.length; i++) {
+        for (let i = 0; i < results?.length; i++) {
           let media = results[i];
           let out = media.url;
           let mediaCaption = `Type: ${media.type}\nQuality: ${media.quality}`;
@@ -49,7 +55,7 @@ const handler = async (m, {
       let results = await getIgdl.igdl(links);
       if (results.media) {
         let caption = `*[ I N S T A G R A M - ${versions.toUpperCase()} ]*\n\n`;
-        for (let i = 0; i < results.media.length; i++) {
+        for (let i = 0; i < results.media?.length; i++) {
           let media = results.media[i];
           if (media) conn.sendFile(m.chat, media, "", `${caption}`, m);
         }
@@ -57,11 +63,11 @@ const handler = async (m, {
     }
     if (versions === "v4") {
       let results = await ig(links);
-      if (results.status && results.result && results.result.medias) {
+      if (results.status && results.result && results.result?.medias) {
         let caption = `*[ I N S T A G R A M - ${versions.toUpperCase()} ]*\n\n`;
-        for (let i = 0; i < results.result.medias.length; i++) {
+        for (let i = 0; i < results.result?.medias?.length; i++) {
           let info = results.result;
-          let media = results.result.medias[i];
+          let media = results.result?.medias[i];
           let out = media.url;
           let mediaCaption =
             `Author: ${info.author}\nTitle: ${info.title}\nType: ${info.type}\nQuality: ${media.quality}\nExtension: ${media.extension}`;
@@ -73,7 +79,7 @@ const handler = async (m, {
       let results = await saveig(links);
       if (results.medias) {
         let caption = `*[ I N S T A G R A M - ${versions.toUpperCase()} ]*\n\n`;
-        for (let i = 0; i < results.medias.length; i++) {
+        for (let i = 0; i < results.medias?.length; i++) {
           let media = results.medias[i];
           let out = media.url;
           let mediaCaption = `Type: ${media.type}\nQuality: ${media.quality}`;
@@ -85,7 +91,7 @@ const handler = async (m, {
       let results = await instagramdl(links);
       if (results.medias) {
         let caption = `*[ I N S T A G R A M - ${versions.toUpperCase()} ]*\n\n`;
-        for (let i = 0; i < results.medias.length; i++) {
+        for (let i = 0; i < results.medias?.length; i++) {
           let media = results.medias[i];
           let out = media.url;
           let mediaCaption =
@@ -98,10 +104,22 @@ const handler = async (m, {
       let results = await instagramGetUrl(links);
       if (results.insBos) {
         let caption = `*[ I N S T A G R A M - ${versions.toUpperCase()} ]*\n\n`;
-        for (let i = 0; i < results.insBos.length; i++) {
+        for (let i = 0; i < results.insBos?.length; i++) {
           let media = results.insBos[i];
           let out = media.url;
           let mediaCaption = `Author: ${media.author}\nType: ${media.type}\nId: ${media.id}`;
+          if (out) conn.sendFile(m.chat, out, "", `${caption}${mediaCaption}`, m);
+        }
+      } else console.log("Invalid data format in results");
+    }
+    if (versions === "v8") {
+      let results = await FastDl(links);
+      if (results.insBos) {
+        let caption = `*[ I N S T A G R A M - ${versions.toUpperCase()} ]*\n\n`;
+        for (let i = 0; i < results.result?.url?.length; i++) {
+          let media = results.result?.url[i];
+          let out = media.url;
+          let mediaCaption = `Name: ${media.name}\nType: ${media.type}`;
           if (out) conn.sendFile(m.chat, out, "", `${caption}${mediaCaption}`, m);
         }
       } else console.log("Invalid data format in results");
@@ -198,4 +216,35 @@ async function instagramGetUrl(url_media) {
   } catch (err) {
     throw err;
   }
+}
+async function FastDl(link) {
+    try {
+        const ts = Date.now();
+        const _ts = ts - Math.floor(Math.random() * 1000000);
+        const _tsc = Math.floor(Math.random() * 1000000);
+        const _s = generateHash(`${link}${ts}${_ts}${_tsc}`);
+
+        const { data } = await axios.post("https://fastdl.app/api/convert", {
+            url: link,
+            ts,
+            _ts,
+            _tsc,
+            _s
+        }, {
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36",
+                "Accept": "application/json, text/plain, */*",
+                "Content-Type": "application/json"
+            }
+        });
+
+        return {
+            status: 200,
+            creator: "David XD",
+            result: data
+        };
+    } catch (error) {
+        console.error(error);
+        return { status: 500, message: "Internal Server Error" };
+    }
 };
