@@ -1,0 +1,11 @@
+const handler = async (m, { conn: conn, text: text, participants: participants }) => {
+  let users = participants.map((u => u.id)).filter((v => v !== conn.user.jid));
+  if (!m.quoted) throw "✳️ Reply Pesan";
+  conn.sendMessage(m.chat, {
+    forward: m.quoted?.fakeObj,
+    mentions: users
+  });
+};
+handler.help = ["totag"], handler.tags = ["group"], handler.command = /^(totag|tag)$/i,
+  handler.admin = !0, handler.group = !0;
+export default handler;
