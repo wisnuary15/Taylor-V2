@@ -1,6 +1,7 @@
 import fetch from "node-fetch";
 const handler = async (m, {
   conn,
+  isOwner,
   usedPrefix,
   command,
   args
@@ -9,12 +10,11 @@ const handler = async (m, {
   if (!text) return m.reply(`Masukkan teks atau reply pesan dengan teks yang ingin diolah.\nContoh penggunaan:\n*${usedPrefix}${command} highly detailed, intricate, 4k, 8k, sharp focus, detailed hair, detailed*`);
   m.react(wait);
   try {
-    let res = await (await fetch(`https://api.neoxr.eu/api/waifudiff?q=${encodeURIComponent(text)}`)).json();
-    await conn.sendFile(m.chat, res.data?.url, "waifudiff.jpg", `Prompt: ${res.data?.prompt}`, m);
+    await conn.sendFile(m.chat, `https://api.xyroinee.xyz/api/ai/animediffusion?q=${text}&apikey=${xyro}`, "anu.jpg", `Prompt: ${text}`, m);
   } catch (e) {
-    console.error(e), m.react(eror);
+    m.react(eror);
   }
 };
-handler.help = ["waifudiff"], handler.tags = ["ai"], handler.command = /^(waifudiff)$/i,
+handler.help = ["animedif"], handler.tags = ["ai"], handler.command = /^(animedif)$/i,
   handler.limit = !0;
 export default handler;
