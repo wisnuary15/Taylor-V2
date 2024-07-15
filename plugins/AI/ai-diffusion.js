@@ -1,7 +1,6 @@
 import fetch from "node-fetch";
 const handler = async (m, {
   conn,
-  isOwner,
   usedPrefix,
   command,
   args
@@ -10,8 +9,8 @@ const handler = async (m, {
   if (!text) return m.reply(`Masukkan teks atau reply pesan dengan teks yang ingin diolah.\nContoh penggunaan:\n*${usedPrefix}${command} highly detailed, intricate, 4k, 8k, sharp focus, detailed hair, detailed*`);
   m.react(wait);
   try {
-    let res = await (await fetch(`https://api.neoxr.eu/api/waifudiff?q=${text}`)).json();
-    await conn.sendFile(m.chat, res.data.url, "waifudiff.jpg", `Prompt: ${text}`, m);
+    let res = await (await fetch(`https://api.neoxr.eu/api/waifudiff?q=${encodeURIComponent(text)}`)).json();
+    await conn.sendFile(m.chat, res.data?.url, "waifudiff.jpg", `Prompt: ${res.data?.prompt}`, m);
   } catch (e) {
     console.error(e), m.react(eror);
   }

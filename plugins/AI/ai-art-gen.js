@@ -13,10 +13,8 @@ const handler = async (m, {
     if (aiArt) {
       const tag = `@${m.sender.split("@")[0]}`;
       await conn.sendMessage(m.chat, {
-        image: {
-          url: aiArt.results[0]?.image
-        },
-        caption: `Nih *${aiArt.results?.metadata.prompt}* nya\nRequest by: ${tag}`,
+        image: Buffer.from(aiArt),
+        caption: `*Prompt:*\n- ${text}\n\n*Request:* ${tag}`,
         mentions: [m.sender]
       }, {
         quoted: m
@@ -42,7 +40,7 @@ async function aiArtGenerator(prompt) {
       },
       body: new URLSearchParams({
         prompt: prompt,
-        output_format: "url",
+        output_format: "bytes",
         user_profile_id: "null",
         anonymous_user_id: "a584e30d-1996-4598-909f-70c7ac715dc1",
         request_timestamp: Date.now(),
@@ -53,7 +51,7 @@ async function aiArtGenerator(prompt) {
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
-    const data = await response.json();
+    const data = await response.arrayBuffer();
     return data;
   } catch (error) {
     console.error("Error fetching data:", error);
