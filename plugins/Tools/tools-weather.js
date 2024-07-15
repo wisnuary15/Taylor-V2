@@ -47,6 +47,9 @@ const weather = async location => {
       coord: {
         lat,
         lon
+      },
+      current: {
+        condition
       }
     } = data;
     const geoapifyParams = new URLSearchParams({
@@ -65,7 +68,7 @@ const weather = async location => {
         properties
       }]
     } = geoapifyData;
-    const iconUrl = icon ? /^https?:/.test(icon) ? icon : `https:${icon}` : icon;
+    const iconUrl = condition?.icon ? /^https?:/.test(condition.icon) ? condition.icon : `https:${condition.icon}` : condition.icon;
     const tileUrl = latLonToTile(lat, lon, 12);
     const sunriseTime = new Date(sunrise * 1e3).toLocaleTimeString();
     const sunsetTime = new Date(sunset * 1e3).toLocaleTimeString();
